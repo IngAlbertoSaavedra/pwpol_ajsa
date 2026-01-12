@@ -14,7 +14,7 @@
     onMounted(() => {
       setTimeout(() => {
         loading.value = false;
-      }, 2000); // cada mil es un segundo
+      }, 2000); // cada mil = un segundo
     });
 
 </script>
@@ -42,5 +42,6 @@
   * {
     --brand-green: #04b500;
     --brand-blue: #0689b0;
+    --pol-blue: #002455;
   }
 </style>

@@ -1,7 +1,6 @@
 <template>
   <div class="splashscreen">
-    <img class="logo" src="../assets/logo.png" alt="Logo" />
-    <h1>Poliacero</h1>
+    <img class="logo" src="../assets/images/logo.jpg" alt="Logo" />
   </div>
 </template>
 
@@ -29,7 +28,7 @@
 
 
   h1 {
-    color: var(--brand-blue);
+    color: var(--pol-blue);
   }
   h1 span {
     color: var(--brand-green);
