@@ -1,26 +1,46 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <Transition name="splash" appear> 
+    <SplashScreen v-if="loading" />
+  </Transition>
+
+  <router-view v-if="!loading" />
 </template>
 
-<script>
-import HelloWorld from "./components/HelloWorld.vue";
+<script setup>
+  import { ref, onMounted } from "vue";
+  import SplashScreen from "./components/SplashScreen.vue";
 
-export default {
-  name: "App",
-  components: {
-    HelloWorld,
-  },
-};
+  const loading = ref(true);
+    onMounted(() => {
+      setTimeout(() => {
+        loading.value = false;
+      }, 2000); // cada mil es un segundo
+    });
+
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  div {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .splash-enter-active,
+  .splash-leave-active {
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .splas-enter-from,
+  .splash-leave-to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  .splash-enter-to,
+  .splash-leave-from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  * {
+    --brand-green: #04b500;
+    --brand-blue: #0689b0;
+  }
 </style>
