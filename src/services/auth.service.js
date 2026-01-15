@@ -53,13 +53,6 @@ function logout() {
   session.value = null; 
 }
 
-function isAuthenticated() {
-    return !!this.getSession()?.token;
-}
-
-function getRole() {
-  return roleRef.value;
-}
 
 export default {
   SESSION_KEY,
@@ -70,7 +63,6 @@ export default {
 
   setSession,
   logout,
-
 
   getSession() {
     return session.value;

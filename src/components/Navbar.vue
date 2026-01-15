@@ -167,11 +167,9 @@
     color: white;
     text-decoration: none;
     white-space: nowrap;
-
     background: transparent;
   }
 
-  
   .nav-item--button {
     border: none;
     cursor: pointer;
@@ -195,7 +193,6 @@
     justify-content: center;
   }
 
-  /* Labels: ocultos en rail */
   .nav-item__label {
     opacity: 0;
     transform: translateX(-6px);

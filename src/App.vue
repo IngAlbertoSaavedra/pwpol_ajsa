@@ -20,7 +20,7 @@
 
       setTimeout(() => {
         loading.value = false;
-        //console.log("pasamos");
+        console.log("pasamos");
       }, 2000);
     } catch (e) {
       console.error("Error:", e);

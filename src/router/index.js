@@ -4,7 +4,7 @@ import authService from "@/services/auth.service.js";
 const routes = [
   {
     path: "/",
-    redirect: () => (authService.isAuthenticatedRef ? "/default" : "/login"),
+    redirect: () => (isAuth ? "/default" : "/login"),
   },
   { 
     path: "/login", 
@@ -51,9 +51,6 @@ router.beforeEach((to) => {
   const allowedRoles = to.matched
     .map((r) => r.meta?.allowedRoles)
     .find((x) => Array.isArray(x));
-
-  //const isAuth = authService.isAuthenticated.value;
-  //const role = authService.role.value;
 
   if (to.path === "/login" && isAuth) {
     return { path: "/default" };
