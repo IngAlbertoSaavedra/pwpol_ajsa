@@ -1,8 +1,7 @@
 <template>
   <section class="default-view">
     
-    <BackgroundFixed />
-
+   
     <Navbar />
     
     <div class="default-view__content">

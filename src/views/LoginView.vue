@@ -101,7 +101,7 @@
     isLoading.value = true;
     console.log("Intentando iniciar sesión...");
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch("../api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -123,9 +123,10 @@
         createdAt: new Date().toISOString(),
       });
 
-      // ✅ redirige a la ruta solicitada o al panel
+
     const redirect = route.query.redirect || "/default";
-      router.push(String(redirect));
+    router.push(String(redirect));
+
     } catch (e) {
       errorMessage.value = e?.message || "Error al iniciar sesión.";
     } finally {

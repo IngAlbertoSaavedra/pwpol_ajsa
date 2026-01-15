@@ -38,12 +38,12 @@
         <span class="nav-item__label">Inicio</span>
       </router-link>
 
-      <router-link v-if="canSeePanel" class="nav-item" to="/panel">
+      <router-link v-if="isLoggedIn" to="/deault">
         <SvgIcon name="dashboard" />
-        <span>Panel</span>
+        Panel
       </router-link>
-
-      <router-link v-if="canSeeAdmin && role === 'admin'" class="nav-item" to="/administracion">
+      
+      <router-link v-if="isLoggedIn && role != 'administrador'" to="/administracion">
         <span class="nav-item__icon" aria-hidden="true">⚙️</span>
         <span class="nav-item__label">Administración</span>
       </router-link>
@@ -53,27 +53,21 @@
         <span class="nav-item__label">Iniciar sesión</span>
       </router-link>
 
-      <button
-        v-if="isLoggedIn"
-        class="nav-item nav-item--button"
-        type="button"
-        @click="onLogout"
-      >
-        <span class="nav-item__icon" aria-hidden="true">🚪</span>
-        <span class="nav-item__label">Cerrar sesión</span>
+      <button v-if="isLoggedIn" 
+        @click="authService.logout()">
+        Salir
       </button>
     </nav>
   </aside>
 </template>
 
 <script setup>
-  import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-  import authService from "@/services/auth.service";
-  import SvgIcon from "../components/SvgIcon.vue";
+  import { computed, ref} from "vue";
+  import authService from "@/services/auth.service.js";
+  import SvgIcon from "@/components/SvgIcon.vue";
 
-  const isLoggedIn = authService.isAuthenticated; 
-  const role = authService.role;                  
-
+  const isLoggedIn = computed(() => authService.isAuthenticatedRef);
+  const role = computed(() => authService.roleRef);
   const sessionTick = ref(0);
 
   function refreshSession() {

@@ -8,25 +8,25 @@
 
 
 <script setup>
-import { ref, onMounted } from "vue";
-import SplashScreen from "@/components/SplashScreen.vue";
-import router from "@/router/index.js";
+  import { ref, onMounted } from "vue";
+  import SplashScreen from "@/components/SplashScreen.vue";
+  import router from "@/router/index.js";
 
-const loading = ref(true);
+  const loading = ref(true);
 
-onMounted(async () => {
-  try {
-    await router.isReady();
+  onMounted(async () => {
+    try {
+      await router.isReady();
 
-    setTimeout(() => {
+      setTimeout(() => {
+        loading.value = false;
+        //console.log("pasamos");
+      }, 2000);
+    } catch (e) {
+      console.error("Error:", e);
       loading.value = false;
-      //console.log("App mounted successfully.");
-    }, 2000);
-  } catch (e) {
-    console.error("Error:", e);
-    loading.value = false;
-  }
-});
+    }
+  });
 </script>
 
 <style>

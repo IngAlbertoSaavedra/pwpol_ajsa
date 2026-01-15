@@ -4,7 +4,7 @@ import authService from "@/services/auth.service.js";
 const routes = [
   {
     path: "/",
-    redirect: () => (authService.isAuthenticated() ? "/default" : "/login"),
+    redirect: () => (authService.isAuthenticatedRef ? "/default" : "/login"),
   },
   { 
     path: "/login", 
@@ -45,26 +45,30 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const isAuth = authService.isAuthenticated();
-  const role = authService.getRole();
-  document.title = `PWPOL_AJSA | ${to.name}`;
+  const isAuth = authService.isAuthenticatedRef.value;
+  const role = authService.roleRef.value;
+  const requiresAuth = to.matched.some((r) => r.meta?.requiresAuth);
+  const allowedRoles = to.matched
+    .map((r) => r.meta?.allowedRoles)
+    .find((x) => Array.isArray(x));
+
+  //const isAuth = authService.isAuthenticated.value;
+  //const role = authService.role.value;
 
   if (to.path === "/login" && isAuth) {
-    return { path: "/" };
+    return { path: "/default" };
   }
 
-  // // ✅ 2) Si la ruta requiere auth y no está logueado -> manda a login
-  // if (to.meta?.requiresAuth && !isAuth) {
-  //   return { path: "/login", query: { redirect: to.fullPath } };
-  // }
+  if (requiresAuth && !isAuth) {
+    return { path: "/login", query: { redirect: to.fullPath } };
+  }
 
-  // // ✅ 3) Si la ruta tiene roles permitidos
-  // const allowed = to.meta?.allowedRoles;
-  // if (allowed && allowed.length && !allowed.includes(role)) {
-  //   return { path: "/" };
-  // }
+  if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(role)) {
+    return { path: "/default" };
+  }
 
   return true;
 });
+
 
 export default router;

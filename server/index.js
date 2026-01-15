@@ -5,15 +5,14 @@ import sql from "mssql";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import { getPool } from "./db.js";
-// Middleware para rutas protegidas
-import { authRequired } from "./authRequired.js";
+import { getPool } from "../server/db.js";
+import { authRequired } from "../server/authRequired.js";
 
 const app = express();
-app.use(cors()); // en producción restringe el origen
+app.use(cors()); // no se te olvide cambiarlo para publicar, wy
 app.use(express.json());
 
-app.post("/api/login", async (req, res) => {
+app.post("../api/login", async (req, res) => {
   const usuario = String(req.body?.usuario || "").trim();
   const clave = String(req.body?.clave || "");
 
@@ -28,16 +27,19 @@ app.post("/api/login", async (req, res) => {
       .request()
       .input("usuario", sql.VarChar(50), usuario)
       .query(`
-        SELECT TOP 1 id, id_empleado, id_perfil, usuario, clave, activo
-        FROM dbo.Usuarios
-        WHERE usuario = @usuario
+        SELECT TOP 1 Emp.nombres, usuario, clave, P.nombre as Perfil
+          FROM dbo.Usuarios as U
+          Inner Join dbo.Perfiles as P on U.id_perfil=P.id
+          Inner Join dbo.Empleados as Emp on Emp.id=U.id_empleado
+          WHERE usuario = @usuario
+              and U.Activo = 1
       `);
 
     const row = result.recordset?.[0];
 
     if (!row) return res.status(401).json({ message: "Credenciales inválidas." });
     if (row.activo !== true && row.activo !== 1) {
-      return res.status(403).json({ message: "Usuario inactivo. Contacta al administrador." });
+      return res.status(403).json({ message: "Usuario inactivo. Comunicate a la extensión 736." });
     }
 
     const ok = await bcrypt.compare(clave, row.clave);
@@ -52,9 +54,8 @@ app.post("/api/login", async (req, res) => {
     return res.json({
       token,
       user: {
-        id: row.id,
-        id_empleado: row.id_empleado,
-        id_perfil: row.id_perfil,
+        empleado: row.nombres,
+        perfil: row.perfil,
         usuario: row.usuario,
       },
     });
@@ -69,7 +70,6 @@ app.get("/api/health", (req, res) => {
   res.json({ ok: true });
 });
 
-// Ruta protegida de ejemplo
 app.get("/api/me", authRequired, (req, res) => {
   return res.json({ user: req.user });
 });
