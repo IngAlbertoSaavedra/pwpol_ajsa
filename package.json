@@ -1,0 +1,24 @@
+{
+  "name": "pwpol_ajsa",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mdi/js": "^7.4.47",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.3",
+    "mssql": "^12.2.0",
+    "pinia": "^3.0.4",
+    "vue": "^3.4.0",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "vite": "^6.0.0"
+  }
+}
