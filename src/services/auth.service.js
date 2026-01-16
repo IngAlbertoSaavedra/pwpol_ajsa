@@ -40,8 +40,11 @@ const roleRef = computed(() => {
   const raw = u?.["perfil"];
   if (typeof raw !== "string" || !raw.trim()) return "visitor";
 
-  return raw.trim().toLowerCase();
+  const role = raw.trim().toLowerCase();
+
+  return role;
 });
+
 
 function setSession(sessionObj) {
   localStorage.setItem(SESSION_KEY, JSON.stringify(sessionObj));

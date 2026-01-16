@@ -7,6 +7,8 @@ import {
   mdiLogout,
   mdiPin,
   mdiPinOutline,
+  mdiAccount,
+  mdiCogs,
 } from "@mdi/js";
 
 export const icons = {
@@ -17,4 +19,6 @@ export const icons = {
   logout: mdiLogout,
   pin: mdiPin,
   pinOff: mdiPinOutline,
+  user: mdiAccount,
+  config:mdiCogs
 };

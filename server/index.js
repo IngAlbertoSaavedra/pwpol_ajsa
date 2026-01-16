@@ -4,9 +4,8 @@ import cors from "cors";
 import sql from "mssql";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
 import { getPool } from "./db.js";
-import { authRequired } from "./authRequired.js";
+
 
 const app = express();
 app.use(cors()); 
@@ -27,7 +26,7 @@ app.post("/api/login", async (req, res) => {
       .request()
       .input("usuario", sql.VarChar(50), usuario)
       .query(`
-          SELECT TOP 1 U.id, Emp.nombres, P.nombre as perfil, usuario, clave, activo
+          SELECT TOP 1 U.id, Emp.nombres, P.nombre as perfil, usuario, clave, U.activo
               FROM dbo.Usuarios as U
               Inner Join dbo.Empleados as Emp on Emp.id=U.id_empleado
               Inner Join dbo.Perfiles as P on P.id=U.id_perfil
@@ -65,15 +64,6 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true });
-});
-
-// Ruta protegida de ejemplo
-app.get("/api/me", authRequired, (req, res) => {
-  return res.json({ user: req.user });
-});
 
 const PORT = 3001;
 app.listen(PORT, () => {

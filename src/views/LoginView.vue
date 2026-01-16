@@ -99,9 +99,9 @@
   async function onSubmit() {
     errorMessage.value = "";
     isLoading.value = true;
-    console.log("Intentando iniciar sesión...");
+    
     try {
-      const res = await fetch("../api/login", {
+      const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -130,7 +130,7 @@
     } catch (e) {
       errorMessage.value = e?.message || "Error al iniciar sesión.";
     } finally {
-      isLoadingloading.value = false;
+      isLoading.value = false;
     }
   }
 
@@ -220,9 +220,9 @@
     margin: 12px 0 0;
     padding: 10px 12px;
     border-radius: 12px;
-    background: var(--red-alert-01);
-    border: 1px solid var(--red-alert-02);
-    color: var(--red);
+    background: var(--alert-bg);
+    border: 1px solid var(--red);
+    color: var(--alert-font);
     font-size: 13px;
   }
 

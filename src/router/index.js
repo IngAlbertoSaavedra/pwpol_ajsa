@@ -4,7 +4,7 @@ import authService from "@/services/auth.service.js";
 const routes = [
   {
     path: "/",
-    redirect: () => (isAuth ? "/default" : "/login"),
+    redirect: () => (authService.isAuthenticatedRef.value ? "/default" : "/login"),
   },
   { 
     path: "/login", 
@@ -15,15 +15,30 @@ const routes = [
     }
   },
 
-  // ejemplo:
-  //{ path: "/", name: "home", component: () => import("../views/HomeView.vue"), meta: { requiresAuth: true } },
-
-  { 
+ { 
     path: "/default", 
     name: "Inicio", 
     component: () => import("@/views/DefaultView.vue"), 
     meta: { 
       requiresAuth: true 
+    } 
+  },
+
+ { 
+    path: "/panel", 
+    name: "Panel", 
+    component: () => import("@/views/PanelView.vue"), 
+    meta: { 
+      requiresAuth: true 
+    } 
+  },
+
+   { 
+    path: "/no-autorizado", 
+    name: "NoAutorizado", 
+    component: () => import("@/views/NoAuthorized/NoAuthorizedView.vue"), 
+    meta: {   
+      FREE: true
     } 
   },
 
@@ -33,13 +48,12 @@ const routes = [
     component: () => import("@/views/AdministracionView.vue"),
     meta: { 
       requiresAuth: true, 
-      allowedRoles: ["admin"] 
+      allowedRoles: ["administrador"] 
     } 
   },
 ];
 
 const router = createRouter({
-  //history: createWebHistory(),
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
@@ -53,7 +67,7 @@ router.beforeEach((to) => {
     .find((x) => Array.isArray(x));
 
   if (to.path === "/login" && isAuth) {
-    return { path: "/default" };
+    return { path: "/login" };
   }
 
   if (requiresAuth && !isAuth) {

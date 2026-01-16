@@ -9,18 +9,17 @@
 
 <script setup>
   import { ref, onMounted } from "vue";
+  import { useRouter } from "vue-router";
   import SplashScreen from "@/components/SplashScreen.vue";
-  import router from "@/router/index.js";
 
+  const router = useRouter();
   const loading = ref(true);
 
   onMounted(async () => {
     try {
       await router.isReady();
-
       setTimeout(() => {
         loading.value = false;
-        console.log("pasamos");
       }, 2000);
     } catch (e) {
       console.error("Error:", e);
@@ -47,6 +46,9 @@
     --shadow: rgba(0,0,0,0.14);
 
     --danger: #ef4444;
+    --alert-bg: rgba(218, 5, 5, 0.25);
+    --alert-font: #DC0000;
+    --red: #8A244B;
     --warning: #f59e0b;
     --success: #22c55e;
   }

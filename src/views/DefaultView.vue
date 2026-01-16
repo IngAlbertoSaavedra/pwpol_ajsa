@@ -1,9 +1,8 @@
 <template>
   <section class="default-view">
     
-   
     <Navbar />
-    
+
     <div class="default-view__content">
       <h2>Bienvenido al sistema PWPol</h2>
       <p>
@@ -14,7 +13,7 @@
 </template>
 
 <script setup>
-  import Navbar from "@/components/Navbar.vue";
+  import Navbar from '@/components/Navbar.vue';
 
 </script>
 
@@ -26,9 +25,8 @@
 
 .default-view__content {
   position: relative;
-  z-index: -1;
   max-width: 900px;
-  padding: 20px;
+  padding-left: 100px;
   border-radius: 14px;
 
   background: rgba(255, 255, 255, 0.78);

@@ -12,8 +12,7 @@
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.05;
-      
-    z-index: 0;
+    z-index: -1;
 
     pointer-events: none;
     }

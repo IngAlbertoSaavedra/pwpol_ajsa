@@ -33,28 +33,28 @@
     <nav class="drawer__nav" aria-label="Secciones">
       <router-link class="nav-item" to="/">
         <span class="nav-item__icon" aria-hidden="true">
-          <svg-icon name="home" />
+          <SvgIcon name="home" />
         </span>
         <span class="nav-item__label">Inicio</span>
       </router-link>
 
-      <router-link v-if="isLoggedIn" to="/deault">
-        <SvgIcon name="dashboard" />
-        Panel
+      <router-link class="nav-item" to="/">
+        <span class="nav-item__icon" aria-hidden="true">
+          <SvgIcon name="config" />
+        </span>
+        <span class="nav-item__label">Vehiculos</span>
       </router-link>
-      
-      <router-link v-if="isLoggedIn && role != 'administrador'" to="/administracion">
-        <span class="nav-item__icon" aria-hidden="true">⚙️</span>
+
+      <router-link class="nav-item" to="/">
+        <span class="nav-item__icon" aria-hidden="true">
+          <SvgIcon name="config" />
+        </span>
         <span class="nav-item__label">Administración</span>
       </router-link>
+      
 
-      <router-link v-if="!isLoggedIn" class="nav-item" to="/login">
-        <span class="nav-item__icon" aria-hidden="true">🔐</span>
-        <span class="nav-item__label">Iniciar sesión</span>
-      </router-link>
-
-      <button v-if="isLoggedIn" 
-        @click="authService.logout()">
+      <button v-if="isLoggedIn" class="btn"
+        @click="logout">
         Salir
       </button>
     </nav>
@@ -62,25 +62,24 @@
 </template>
 
 <script setup>
-  import { computed, ref} from "vue";
+  import { computed, ref } from "vue";
   import authService from "@/services/auth.service.js";
   import SvgIcon from "@/components/SvgIcon.vue";
+  import { useRouter } from "vue-router";
 
-  const isLoggedIn = computed(() => authService.isAuthenticatedRef);
-  const role = computed(() => authService.roleRef);
-  const sessionTick = ref(0);
+  const isHovered = ref(false);
+  const hasFocusInside = ref(false);
+  const isPinned = ref(false);
+  const isExpanded = computed(() => isPinned.value || isHovered.value || hasFocusInside.value);
 
-  function refreshSession() {
-    sessionTick.value++;
+  const isLoggedIn = computed(() => authService.isAuthenticatedRef.value);
+  const role = computed(() => authService.roleRef.value);
+  const router = useRouter()
+
+  const logout = () => {
+    authService.logout()
+    router.push('/login')
   }
-
-  onMounted(() => {
-    window.addEventListener("pwpol-session-changed", refreshSession);
-  });
-
-  onBeforeUnmount(() => {
-    window.removeEventListener("pwpol-session-changed", refreshSession);
-  });
 
 </script>
 
@@ -146,7 +145,6 @@
     outline: none;
   }
 
-  /* Nav */
   .drawer__nav {
     display: flex;
     flex-direction: column;
@@ -154,7 +152,6 @@
     gap: 4px;
   }
 
-  /* Items */
   .nav-item {
     display: flex;
     align-items: center;
@@ -203,6 +200,17 @@
     opacity: 1;
     transform: translateX(0);
   }
+
+  .btn {
+    height: 44px;
+    border-radius: 14px;
+    border: none;
+    background: var(--brand-blue);
+    color: var(--white);
+    font-weight: 800;
+    cursor: pointer;
+  }
+
 
   @media (prefers-reduced-motion: reduce) {
     .drawer,
