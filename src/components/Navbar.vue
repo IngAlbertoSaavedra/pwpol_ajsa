@@ -17,7 +17,7 @@
       />
 
       <span class="drawer__title" v-show="isExpanded">PWPol</span>
-
+      {{ usuario }}
       <button
         class="drawer__pin"
         type="button"
@@ -31,28 +31,27 @@
     </div>
 
     <nav class="drawer__nav" aria-label="Secciones">
-      <router-link class="nav-item" to="/">
+      <router-link class="nav-item" to="/default">
         <span class="nav-item__icon" aria-hidden="true">
           <SvgIcon name="home" />
         </span>
         <span class="nav-item__label">Inicio</span>
       </router-link>
 
-      <router-link class="nav-item" to="/">
+      <router-link class="nav-item" to="/vehiculos">
         <span class="nav-item__icon" aria-hidden="true">
-          <SvgIcon name="config" />
+          <SvgIcon name="car" />
         </span>
         <span class="nav-item__label">Vehiculos</span>
       </router-link>
 
-      <router-link class="nav-item" to="/">
+      <router-link class="nav-item" to="/administracion">
         <span class="nav-item__icon" aria-hidden="true">
           <SvgIcon name="config" />
         </span>
         <span class="nav-item__label">Administración</span>
       </router-link>
       
-
       <button v-if="isLoggedIn" class="btn"
         @click="logout">
         Salir
@@ -74,6 +73,8 @@
 
   const isLoggedIn = computed(() => authService.isAuthenticatedRef.value);
   const role = computed(() => authService.roleRef.value);
+  const nombre = computed(() => authService.nombreRef.value);
+  const usuario = computed(() => authService.userRef.value);
   const router = useRouter()
 
   const logout = () => {

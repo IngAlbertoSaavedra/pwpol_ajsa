@@ -25,9 +25,9 @@ const routes = [
   },
 
  { 
-    path: "/panel", 
-    name: "Panel", 
-    component: () => import("@/views/PanelView.vue"), 
+    path: "/vehiculos", 
+    name: "Vehículos", 
+    component: () => import("@/views/Vehiculos.vue"), 
     meta: { 
       requiresAuth: true 
     } 
@@ -45,11 +45,7 @@ const routes = [
   { 
     path: "/administracion", 
     name: "Administracion", 
-    component: () => import("@/views/AdministracionView.vue"),
-    meta: { 
-      requiresAuth: true, 
-      allowedRoles: ["administrador"] 
-    } 
+    component: () => import("@/views/AdministracionView.vue")
   },
 ];
 
@@ -60,10 +56,10 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const isAuth = authService.isAuthenticatedRef.value;
-  const role = authService.roleRef.value;
+  const perfil = authService.perfilRef.value;
   const requiresAuth = to.matched.some((r) => r.meta?.requiresAuth);
-  const allowedRoles = to.matched
-    .map((r) => r.meta?.allowedRoles)
+  const allowedperfils = to.matched
+    .map((r) => r.meta?.allowedperfils)
     .find((x) => Array.isArray(x));
 
   if (to.path === "/login" && isAuth) {
@@ -74,7 +70,7 @@ router.beforeEach((to) => {
     return { path: "/login", query: { redirect: to.fullPath } };
   }
 
-  if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(role)) {
+  if (allowedperfils && allowedperfils.length > 0 && !allowedperfils.includes(perfil)) {
     return { path: "/default" };
   }
 

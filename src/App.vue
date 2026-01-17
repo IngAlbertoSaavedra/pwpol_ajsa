@@ -1,9 +1,11 @@
 <template>
+  
   <Transition name="splash" appear>
     <SplashScreen v-if="loading" />
-  </Transition>
+  </Transition> 
 
-  <router-view v-if="!loading" />
+  <MainLayout />
+
 </template>
 
 
@@ -11,7 +13,7 @@
   import { ref, onMounted } from "vue";
   import { useRouter } from "vue-router";
   import SplashScreen from "@/components/SplashScreen.vue";
-
+  import MainLayout from "@/layouts/MainLayout.vue";
   const router = useRouter();
   const loading = ref(true);
 

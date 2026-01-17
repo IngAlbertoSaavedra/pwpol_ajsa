@@ -44,7 +44,7 @@ app.post("/api/login", async (req, res) => {
     if (!ok) return res.status(401).json({ message: "Credenciales inválidas." });
 
     const token = jwt.sign(
-      { uid: row.id, empleado: row.empleado, perfil: row.perfil },
+      { uid: row.id, empleado: row.nombres, perfil: row.perfil, usuario: row.usuario },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "8h" }
     );
@@ -53,7 +53,7 @@ app.post("/api/login", async (req, res) => {
       token,
       user: {
         id: row.id,
-        nombre: row.nombre,
+        empleado: row.nombres,
         perfil: row.perfil,
         usuario: row.usuario,
       },

@@ -87,6 +87,7 @@
   import { useRoute, useRouter } from "vue-router";
   import authService from "@/services/auth.service.js";
 
+
   const usuario = ref("");
   const clave = ref("");
   const errorMessage = ref("");
@@ -107,6 +108,7 @@
         body: JSON.stringify({
           usuario: usuario.value,
           clave: clave.value,
+          nombres: nombres.value,
         }),
       });
 
@@ -116,10 +118,11 @@
         throw new Error(data?.message || "Error al iniciar sesión.");
       }
 
-
       authService.setSession({
         token: data.token,
-        user: data.user,
+        user: data.usuario,
+        perfil: data.perfil,
+        nombre: data.empleado,
         createdAt: new Date().toISOString(),
       });
 

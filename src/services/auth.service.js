@@ -33,17 +33,19 @@ window.addEventListener("storage", (e) => {
 
 const isAuthenticatedRef = computed(() => !!session.value?.token);
 const userRef = computed(() => session.value?.user ?? null);
-const roleRef = computed(() => {
-  const u = userRef.value;
-  if (!u) return "visitor";
+const nombreRef = computed(() => session.value?.empleado ?? null);
+const perfilRef = computed(() => session.value?.perfil ?? "visitor");
+// const perfilRef = computed(() => {
+//   const u = userRef.value;
+//   if (!u) return "visitor";
 
-  const raw = u?.["perfil"];
-  if (typeof raw !== "string" || !raw.trim()) return "visitor";
+//   const raw = u?.["perfilRef"];
+//   if (typeof raw !== "string" || !raw.trim()) return "visitor";
 
-  const role = raw.trim().toLowerCase();
+//   const role = raw.trim().toLowerCase();
 
-  return role;
-});
+//   return role;
+// });
 
 
 function setSession(sessionObj) {
@@ -61,8 +63,9 @@ export default {
   SESSION_KEY,
   session,
   isAuthenticatedRef,
-  roleRef,
+  perfilRef,
   userRef,
+  nombreRef,
 
   setSession,
   logout,
