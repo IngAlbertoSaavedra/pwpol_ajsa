@@ -61,10 +61,13 @@
 </template>
 
 <script setup>
-  import { computed, ref } from "vue";
+  import { computed, ref, watch } from "vue";
   import authService from "@/services/auth.service.js";
   import SvgIcon from "@/components/SvgIcon.vue";
   import { useRouter } from "vue-router";
+  
+  const RAIL = 80;
+  const EXPANDED = 256;
 
   const isHovered = ref(false);
   const hasFocusInside = ref(false);
@@ -76,7 +79,16 @@
   const nombre = computed(() => authService.nombreRef.value);
   const usuario = computed(() => authService.userRef.value);
   const router = useRouter()
+  
+  const emit = defineEmits(["nav-offset"]);
+  const reservedWidth = computed(() => (isPinned.value ? EXPANDED : RAIL));
 
+  watch(
+    reservedWidth,
+    (w) => emit("nav-offset", w),
+    { immediate: true }
+  );
+  
   const logout = () => {
     authService.logout()
     router.push('/login')

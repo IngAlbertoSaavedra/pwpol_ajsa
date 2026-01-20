@@ -1,26 +1,47 @@
 <template>
-
-  <div class="default-view">
+  <div class="layout" :style="{ '--nav-offset': navOffset + 'px' }">
     <BackgroundFixed />
 
-    <Navbar v-if="isLoggedIn"/>
+    <Navbar
+      v-if="isLoggedIn"
+      @nav-offset="navOffset = $event"
+    />
 
-    <router-view /> 
+    <Header 
+      v-if="isLoggedIn"
+      @nav-offset="navOffset = $event"
+    />
 
+
+    <main class="content">
+      <router-view />
+    </main>
   </div>
 </template>
 
 <script setup>
-  import { computed } from "vue";
+  import { computed, ref } from "vue";
   import BackgroundFixed from "@/components/BackgroundFixed.vue";
   import Navbar from "@/components/Navbar.vue";
   import authService from "@/services/auth.service.js";
-  
-  const isLoggedIn = computed(() => authService.isAuthenticatedRef.value);
-  const role = computed(() => authService.roleRef.value);
+  import Header from "@/components/HeaderView.vue";
 
+  const isLoggedIn = computed(() => authService.isAuthenticatedRef.value);
+  const navOffset = ref(80);
 </script>
 
 <style scoped>
+  .layout {
+    min-height: 100vh;
+    position: relative;
+  }
 
+
+  .content {
+    padding-left: var(--nav-offset);
+    padding-top: 16px;
+    padding-right: 16px;
+    padding-bottom: 16px;
+    box-sizing: border-box;
+  }
 </style>

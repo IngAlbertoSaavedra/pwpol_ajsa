@@ -27,7 +27,16 @@ const routes = [
  { 
     path: "/vehiculos", 
     name: "Vehículos", 
-    component: () => import("@/views/Vehiculos.vue"), 
+    component: () => import("@/views/Vehiculos/Index.vue"), 
+    meta: { 
+      requiresAuth: true 
+    } 
+  },
+
+  { 
+    path: "/vehiculos/registrarcarga", 
+    name: "RegistrarCarga", 
+    component: () => import("@/views/Vehiculos/RegistrarCargaView.vue"), 
     meta: { 
       requiresAuth: true 
     } 
@@ -63,7 +72,7 @@ router.beforeEach((to) => {
     .find((x) => Array.isArray(x));
 
   if (to.path === "/login" && isAuth) {
-    return { path: "/login" };
+    return { path: "/default" };
   }
 
   if (requiresAuth && !isAuth) {
