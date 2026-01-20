@@ -16,8 +16,8 @@
         class="drawer__logo"
       />
 
-      <span class="drawer__title" v-show="isExpanded">PWPol</span>
-      {{ usuario }}
+      <span class="drawer__title" v-show="isExpanded">PWPol {{ nombre.value }}</span>
+
       <button
         class="drawer__pin"
         type="button"

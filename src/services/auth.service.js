@@ -28,24 +28,14 @@ const session = ref(readSession());
 window.addEventListener("storage", (e) => {
   if (e.key === SESSION_KEY) {
     session.value = readSession();
+    
   }
 });
 
 const isAuthenticatedRef = computed(() => !!session.value?.token);
-const userRef = computed(() => session.value?.user ?? null);
-const nombreRef = computed(() => session.value?.empleado ?? null);
-const perfilRef = computed(() => session.value?.perfil ?? "visitor");
-// const perfilRef = computed(() => {
-//   const u = userRef.value;
-//   if (!u) return "visitor";
-
-//   const raw = u?.["perfilRef"];
-//   if (typeof raw !== "string" || !raw.trim()) return "visitor";
-
-//   const role = raw.trim().toLowerCase();
-
-//   return role;
-// });
+const userRef = computed(() => session.value?.userusuario ?? '');
+const nombreRef = computed(() => session.value?.user.empleado ?? '');
+const perfilRef = computed(() => session.value?.user.perfil ?? "visitor");
 
 
 function setSession(sessionObj) {
@@ -73,5 +63,4 @@ export default {
   getSession() {
     return session.value;
   },
-
 };

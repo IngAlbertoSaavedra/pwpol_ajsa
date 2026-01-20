@@ -1,4 +1,5 @@
 <template>
+
   <div class="default-view">
     <BackgroundFixed />
 
@@ -21,7 +22,5 @@
 </script>
 
 <style scoped>
-  .default-view {
-    padding-left: 80px;
-  }
+
 </style>

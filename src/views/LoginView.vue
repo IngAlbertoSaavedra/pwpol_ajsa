@@ -106,9 +106,8 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          usuario: usuario.value,
+          usuario:  usuario.value,
           clave: clave.value,
-          nombres: nombres.value,
         }),
       });
 
@@ -118,15 +117,13 @@
         throw new Error(data?.message || "Error al iniciar sesión.");
       }
 
+      
       authService.setSession({
         token: data.token,
-        user: data.usuario,
-        perfil: data.perfil,
-        nombre: data.empleado,
+        user: data.user, 
         createdAt: new Date().toISOString(),
       });
-
-
+      
     const redirect = route.query.redirect || "/default";
     router.push(String(redirect));
 

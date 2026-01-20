@@ -18,7 +18,8 @@ app.post("/api/login", async (req, res) => {
   if (!usuario || !clave) {
     return res.status(400).json({ message: "Usuario y contraseña son obligatorios." });
   }
-
+  console.log("Intento de login:", usuario);
+  console.log("Clave recibida:", clave);
   try {
     const pool = await getPool();
 
