@@ -1,13 +1,6 @@
 <template>
-    <div>
-        <span>Registrar Carga de Vehículo</span>
-    </div>
+  <div>
+    <h2>Registrar Carga</h2>
+    <p>Contenido de Registrar Carga...</p>
+  </div>
 </template>
-
-<script setup>
-
-</script>
-
-<style lang="scss" scoped>
-
-</style>

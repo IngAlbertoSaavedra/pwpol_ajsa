@@ -66,8 +66,8 @@
   import SvgIcon from "@/components/SvgIcon.vue";
   import { useRouter } from "vue-router";
   
-  const RAIL = 80;
-  const EXPANDED = 256;
+  const SLIM = 80;
+  const EXPANDED = 260;
 
   const isHovered = ref(false);
   const hasFocusInside = ref(false);
@@ -81,7 +81,7 @@
   const router = useRouter()
   
   const emit = defineEmits(["nav-offset"]);
-  const reservedWidth = computed(() => (isPinned.value ? EXPANDED : RAIL));
+  const reservedWidth = computed(() => (isPinned.value ? EXPANDED : SLIM));
 
   watch(
     reservedWidth,
@@ -99,7 +99,7 @@
 <style scoped>
 
   .drawer {
-    --drawer-rail-width: 56px;
+    --drawer-SLIM-width: 56px;
     --drawer-expanded-width: 256px;
 
     position: fixed;
@@ -107,7 +107,7 @@
     left: 0;
     height: 100vh;
 
-    width: var(--drawer-rail-width);
+    width: var(--drawer-SLIM-width);
     background: var(--pol-blue);
     color: white;
     z-index: 1000;

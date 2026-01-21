@@ -7,13 +7,12 @@
       @nav-offset="navOffset = $event"
     />
 
-    <Header 
-      v-if="isLoggedIn"
-      @nav-offset="navOffset = $event"
-    />
-
-
     <main class="content">
+      <Header 
+        v-if="isLoggedIn"
+        @nav-offset="navOffset = $event"
+      />
+
       <router-view />
     </main>
   </div>

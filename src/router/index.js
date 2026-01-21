@@ -24,23 +24,51 @@ const routes = [
     } 
   },
 
- { 
-    path: "/vehiculos", 
-    name: "Vehículos", 
-    component: () => import("@/views/Vehiculos/Index.vue"), 
-    meta: { 
-      requiresAuth: true 
-    } 
+  {
+    path: "/vehiculos",
+    component: () => import("@/views/vehiculos/Index.vue"),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: "",
+        name: "VehiculosIndex",
+        redirect: { name: "VehiculoConsultarVehiculo" },
+      },
+
+      // Vehiculo
+      {
+        path: "registrar-carga",
+        name: "VehiculoRegistrarCarga",
+        component: () => import("@/views/vehiculos/RegistrarCargaView.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "consultar-vehiculo",
+        name: "VehiculoConsultarVehiculo",
+        component: () => import("@/views/vehiculos/ConsultarVehiculoView.vue"),
+        meta: { requiresAuth: true },
+      },
+
+      // Flotilla
+      {
+        path: "consultar-flotilla",
+        name: "FlotillaConsultarFlotilla",
+        component: () => import("@/views/vehiculos/ConsultarFlotillaView.vue"),
+        meta: { requiresAuth: true },
+      },
+
+      // Reportes
+      {
+        path: "reporte-rendimiento-vehiculo",
+        name: "ReporteRendimientoVehiculo",
+        component: () => import("@/views/vehiculos/RendimientoVehiculoView.vue"),
+        meta: { requiresAuth: true },
+      },
+
+    ],
   },
 
-  { 
-    path: "/vehiculos/registrarcarga", 
-    name: "RegistrarCarga", 
-    component: () => import("@/views/Vehiculos/RegistrarCargaView.vue"), 
-    meta: { 
-      requiresAuth: true 
-    } 
-  },
+
 
    { 
     path: "/no-autorizado", 
