@@ -26,7 +26,7 @@ const routes = [
 
   {
     path: "/vehiculos",
-    component: () => import("@/views/vehiculos/Index.vue"),
+    component: () => import("@/views/vehiculos/VehiculosView.vue"),
     meta: { requiresAuth: true },
     children: [
       {
@@ -82,7 +82,7 @@ const routes = [
   { 
     path: "/administracion", 
     name: "Administracion", 
-    component: () => import("@/views/AdministracionView.vue")
+    component: () => import("@/views/administracion/AdministracionView.vue")
   },
 ];
 
