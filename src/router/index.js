@@ -20,33 +20,34 @@ const routes = [
     name: "Inicio", 
     component: () => import("@/views/DefaultView.vue"), 
     meta: { 
-      requiresAuth: true 
+      requiresAuth: true, 
+      viewDesc: "Página de Inicio"
     } 
   },
 
   {
     path: "/vehiculos",
     component: () => import("@/views/vehiculos/VehiculosView.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, viewDesc: "Vehículos" },
     children: [
       {
         path: "",
         name: "VehiculosIndex",
         redirect: { name: "VehiculoConsultarVehiculo" },
+         meta: { requiresAuth: true, viewDesc: "Vehículos" }
       },
 
-      // Vehiculo
       {
         path: "registrar-carga",
         name: "VehiculoRegistrarCarga",
         component: () => import("@/views/vehiculos/RegistrarCargaView.vue"),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, viewDesc: "Registrar Carga de Vehículo" },
       },
       {
         path: "consultar-vehiculo",
         name: "VehiculoConsultarVehiculo",
         component: () => import("@/views/vehiculos/ConsultarVehiculoView.vue"),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, viewDesc: "Consultar Vehículo" },
       },
 
       // Flotilla
@@ -54,7 +55,7 @@ const routes = [
         path: "consultar-flotilla",
         name: "FlotillaConsultarFlotilla",
         component: () => import("@/views/vehiculos/ConsultarFlotillaView.vue"),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, viewDesc: "Consultar Flotilla" },
       },
 
       // Reportes
@@ -62,7 +63,7 @@ const routes = [
         path: "reporte-rendimiento-vehiculo",
         name: "ReporteRendimientoVehiculo",
         component: () => import("@/views/vehiculos/RendimientoVehiculoView.vue"),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, viewDesc: "Reporte Rendimiento Vehículo" },
       },
 
     ],

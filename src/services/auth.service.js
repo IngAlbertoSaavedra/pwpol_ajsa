@@ -34,7 +34,8 @@ window.addEventListener("storage", (e) => {
 
 const isAuthenticatedRef = computed(() => !!session.value?.token);
 const userRef = computed(() => session.value?.userusuario ?? '');
-const nombreRef = computed(() => session.value?.user.empleado ?? '');
+const nombreRef = computed(() => (session.value?.user.empleado ?? '').toUpperCase());
+
 const perfilRef = computed(() => session.value?.user.perfil ?? "visitor");
 
 

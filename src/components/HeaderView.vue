@@ -1,14 +1,17 @@
 <template>
     <div>
         <span> HEADssssssssssssssssssssssssssssssER </span> 
-        <span> {{ nombre.value }}</span>
+        <v-toolbar-title> {{ viewDesc }} </v-toolbar-title>
+        <span> {{ nombre }}</span>
     </div>
 </template>
 
 <script setup>
-    import { computed, ref, watch } from "vue";
+    import { computed, ref, watch, inject } from "vue";
+    
     import authService from "@/services/auth.service.js";
     
+    const viewDesc = inject("viewDesc");
     const isPinned = ref(false);
 
 

@@ -19,7 +19,9 @@
 </template>
 
 <script setup>
-  import { computed, ref } from "vue";
+  import { computed, ref, provide } from "vue";
+  import { useRoute } from "vue-router";
+
   import BackgroundFixed from "@/components/BackgroundFixed.vue";
   import Navbar from "@/components/Navbar.vue";
   import authService from "@/services/auth.service.js";
@@ -27,6 +29,18 @@
 
   const isLoggedIn = computed(() => authService.isAuthenticatedRef.value);
   const navOffset = ref(80);
+
+  const route = useRoute();
+  
+  const viewDesc = computed(() => {
+    const direct = route.meta?.viewDesc;
+    if (direct) return direct;
+
+    const fromMatched = [...route.matched].reverse().find(r => r.meta?.viewDesc)?.meta?.viewDesc;
+    return fromMatched || "";
+  });
+
+  provide("viewDesc", viewDesc);
 </script>
 
 <style scoped>
