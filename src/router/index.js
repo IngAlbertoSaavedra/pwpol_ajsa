@@ -69,9 +69,48 @@ const routes = [
     ],
   },
 
+  {
+    path: "/administracion",
+    name: "Administracion",
+    component: () => import("@/views/administracion/AdministracionView.vue"),
+    meta: { requiresAuth: true, viewDesc: "Administración" },
+    children: [
+      {
+        path: "sucursales",
+        name: "AdministracionSucursales",
+        component: () => import("@/views/administracion/SucursalesView.vue"),
+        meta: { requiresAuth: true, viewDesc: "Sucursales" },
+      },
+
+      {
+        path: "empleados",
+        name: "AdministracionEmpleados",
+        component: () => import("@/views/administracion/EmpleadosView.vue"),
+        meta: { requiresAuth: true, viewDesc: "Empleados" },
+      },
+            {
+        path: "vehiculos",
+        name: "AdministracionVehiculos",
+        component: () => import("@/views/administracion/VehiculosView.vue"),
+        meta: { requiresAuth: true, viewDesc: "Vehículos" },
+      },
+      {
+        path: "usuarios",
+        name: "AdministracionUsuarios",
+        component: () => import("@/views/administracion/UsuariosView.vue"),
+        meta: { requiresAuth: true, viewDesc: "Usuarios" },
+      },
+      {
+        path: "perfiles",
+        name: "AdministracionPerfiles",
+        component: () => import("@/views/administracion/PerfilesView.vue"),
+        meta: { requiresAuth: true, viewDesc: "Perfiles" },
+      },
+    ],
+  },
 
 
-   { 
+  { 
     path: "/no-autorizado", 
     name: "NoAutorizado", 
     component: () => import("@/views/NoAuthorized/NoAuthorizedView.vue"), 
@@ -80,11 +119,7 @@ const routes = [
     } 
   },
 
-  { 
-    path: "/administracion", 
-    name: "Administracion", 
-    component: () => import("@/views/administracion/AdministracionView.vue")
-  },
+  
 ];
 
 const router = createRouter({

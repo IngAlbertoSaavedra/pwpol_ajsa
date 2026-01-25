@@ -52,6 +52,7 @@
     --alert-font: #DC0000;
     --red: #8A244B;
     --warning: #f59e0b;
+    --pol-yellow: #FFE766;
     --success: #22c55e;
   }
 

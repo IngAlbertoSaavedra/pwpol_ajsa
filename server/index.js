@@ -4,12 +4,14 @@ import cors from "cors";
 import sql from "mssql";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { getPool } from "./db.js";
+import { getPool } from "./db/db.js";
+import sucursalesRoutes from "./routes/sucursales.routes.js";
 
 
 const app = express();
 app.use(cors()); 
 app.use(express.json());
+app.use("/api/sucursales", sucursalesRoutes);
 
 app.post("/api/login", async (req, res) => {
   const usuario = String(req.body?.usuario || "").trim();
@@ -23,16 +25,10 @@ app.post("/api/login", async (req, res) => {
   try {
     const pool = await getPool();
 
-    const result = await pool
-      .request()
-      .input("usuario", sql.VarChar(50), usuario)
-      .query(`
-          SELECT TOP 1 U.id, Emp.nombres, P.nombre as perfil, usuario, clave, U.activo
-              FROM dbo.Usuarios as U
-              Inner Join dbo.Empleados as Emp on Emp.id=U.id_empleado
-              Inner Join dbo.Perfiles as P on P.id=U.id_perfil
-              WHERE usuario = @usuario
-      `);
+    const result = await pool.request()
+        .input("usuario", sql.VarChar, usuario)
+        .execute("sp_consultar_usuario");
+
 
     const row = result.recordset?.[0];
 
