@@ -6,9 +6,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { getPool } from "./db/db.js";
 import sucursalesRoutes from "./routes/sucursales.routes.js";
-
+import empresasRoutes from "./routes/empresas.routes.js";
 
 const app = express();
+const PORT = 3001;
+
+app.use("/api/empresas", empresasRoutes);
 app.use(cors()); 
 app.use(express.json());
 app.use("/api/sucursales", sucursalesRoutes);
@@ -62,7 +65,7 @@ app.post("/api/login", async (req, res) => {
 });
 
 
-const PORT = 3001;
+
 app.listen(PORT, () => {
   console.log(`API corriendo en http://localhost:${PORT}`);
 });

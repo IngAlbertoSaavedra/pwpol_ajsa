@@ -27,6 +27,7 @@ const menus = [
     icon: "mdi-folder-cog-outline",
     items: [
       { title: "Sucursales", routeName: "AdministracionSucursales" },
+      { title: "Empresas", routeName: "AdministracionEmpresas" },
       { title: "Empleados", routeName: "AdministracionEmpleados" },
       { divider: true },
       { title: "Usuarios", routeName: "AdministracionUsuarios" },

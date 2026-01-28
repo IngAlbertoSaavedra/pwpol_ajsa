@@ -83,6 +83,13 @@ const routes = [
       },
 
       {
+        path: "empresas",
+        name: "AdministracionEmpresas",
+        component: () => import("@/views/administracion/EmpresasView.vue"),
+        meta: { requiresAuth: true, viewDesc: "Empleados" },
+      },
+
+      {
         path: "empleados",
         name: "AdministracionEmpleados",
         component: () => import("@/views/administracion/EmpleadosView.vue"),
