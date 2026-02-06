@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { useToast } from '@/composables/useToast'
+  import { useToast } from '@/composables/useToast'
 
-const { toast, hide } = useToast()
+  const { toast, hide } = useToast()
 </script>

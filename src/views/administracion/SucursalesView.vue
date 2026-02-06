@@ -1,243 +1,211 @@
 <template>
   <div class="content">
+    <BaseToast />
+
     <div class="toolbar">
       <h2 class="title">Sucursales</h2>
-      <v-spacer />
 
-      <v-text-field
+      <div class="spacer"></div>
+
+      <BaseInput
         v-model="search"
-        label="Buscar"
-        density="compact"
-        variant="outlined"
-        hide-details
-        style="max-width: 280px"
+        label=""
+        placeholder="Buscar..."
+        style="max-width: 280px;"
       />
 
-      <v-btn class="btn-add" variant="flat" @click="openCreate">
-        <v-icon size="18" class="mr-2">mdi-plus</v-icon>
+      <BaseButton class="btn-add" variant="primary" @click="openCreate">
         AGREGAR
-      </v-btn>
+      </BaseButton>
     </div>
 
-    <v-data-table
-      :items="filtered"
-      :headers="headers"
-      item-key="id"
-      density="comfortable"
-      class="grid elevation-1"
-      no-data-text="No se encontraron resultados"
-      :row-props="rowProps"
+    <DataTable
+      :rows="filtered"
+      :columns="columns"
+      rowKey="id"
+      :pageSize="10"
+      :searchable="false"
     >
-      <template #item.edit="{ item }">
-        <v-btn
-          size="small"
-          variant="text"
-          icon="mdi-pencil"
-          @click="openEdit(item)"
-        />
+
+      <template #row="{ row, index }">
+        <tr :class="index % 2 === 0 ? 'row-even' : 'row-odd'">
+          <td v-for="col in columns" :key="col.key" class="td">
+            {{ row[col.key] }}
+          </td>
+          <td class="td">
+            <BaseButton variant="secondary" @click="openEdit(row)">Editar</BaseButton>
+          </td>
+        </tr>
       </template>
-    </v-data-table>
 
-    <v-dialog v-model="dialog" max-width="720">
-      <v-card>
-        <v-card-title class="d-flex align-center">
-          <span class="text-h6">
-            {{ form.id ? "Editar sucursal" : "Agregar sucursal" }}
-          </span>
-          <v-spacer />
-          <v-btn icon="mdi-close" variant="text" @click="closeDialog" />
-        </v-card-title>
+      <!-- sin esto no sale la etiqueta ACIONES-->
+      <template #actions />
 
-        <v-card-text>
-          <v-form ref="formRef" @submit.prevent="save">
-            <v-row dense>
-              <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="form.nombre"
-                  label="* Sucursal"
-                  :rules="[rules.required]"
-                  variant="outlined"
-                  density="comfortable"
-                />
-              </v-col>
+    </DataTable>
 
-              <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="form.extension"
-                  label="* Extensión"
-                  :rules="[rules.required]"
-                  variant="outlined"
-                  density="comfortable"
-                  maxlength="4"
-                />
-              </v-col>
+    <BaseModal v-model:open="dialog" :title="form.id ? 'Editar sucursal' : 'Agregar sucursal'">
+      <form class="form-grid" @submit.prevent="save">
+        <BaseInput
+          v-model="form.nombre"
+          label="Sucursal"
+          :required="true"
+          :error="errors.nombre"
+          placeholder="mayúsculas"
+        />
 
-              <v-col cols="12">
-                <v-text-field
-                  v-model="form.domicilio"
-                  label="* Domicilio"
-                  :rules="[rules.required]"
-                  variant="outlined"
-                  density="comfortable"
-                />
-              </v-col>
+        <BaseInput
+          v-model="form.extension"
+          label="Extensión"
+          :required="true"
+          :error="errors.extension"
+          placeholder="Máx 4"
+        />
 
-              <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="form.correo"
-                  label="* Correo"
-                  variant="outlined"
-                  density="comfortable"
-                  :rules="[rules.email, rules.required]"
-                />
-              </v-col>
+        <BaseInput
+          v-model="form.domicilio"
+          label="Domicilio"
+          :required="true"
+          :error="errors.domicilio"
+          class="col-span-2"
+          placeholder="calle y numero, colonia, ciudad"
+        />
 
-              <v-col cols="12" md="3">
-                <v-text-field 
-                  v-model="form.telefono1" 
-                  label="Teléfono 1" 
-                  variant="outlined" 
-                  density="comfortable" 
-                />
-              </v-col>
+        <BaseInput
+          v-model="form.correo"
+          label="Correo"
+          type="email"
+          :required="true"
+          :error="errors.correo"
+          placeholder="ejemplo@poliacero.com"
+        />
 
-              <v-col cols="12" md="3">
-                <v-text-field 
-                  v-model="form.telefono2" 
-                  label="Teléfono 2" 
-                  variant="outlined" 
-                  density="comfortable" 
-                />
-              </v-col>
+        <BaseInput
+          v-model="form.telefono1"
+          label="Teléfono 1"
+          placeholder="sin espacios, sin guiones"
+        />
 
-              <v-col cols="12" md="3">
-                <v-text-field 
-                  v-model.number="form.altitud" 
-                  label="Altitud" 
-                  variant="outlined" 
-                  density="comfortable" 
-                  type="number" 
-                />
-              </v-col>
+        <BaseInput
+          v-model="form.telefono2"
+          label="Teléfono 2"
+          placeholder="sin espacios, sin guiones"
+        />
 
-              <v-col cols="12" md="3">
-                <v-text-field 
-                  v-model.number="form.latitud" 
-                  label="Latitud" 
-                  variant="outlined" 
-                  density="comfortable" 
-                  type="number" 
-                />
-              </v-col>
+        <BaseInput
+          v-model="form.altitud"
+          label="Altitud"
+          type="number"
+        />
 
-            <v-col cols="12" md="3">
-              <v-select
-                v-model="form.r_social"
-                :items="empresas"
-                item-title="ncorto"
-                item-value="id"
-                label="* Empresa"
-                :rules="[rules.required]"
-                variant="outlined"
-                density="comfortable"
-                clearable
-              />
-            </v-col>
+        <BaseInput
+          v-model="form.latitud"
+          label="Latitud"
+          type="number"
+        />
 
+        <BaseSelect
+          v-model="form.r_social"
+          label="Empresa"
+          :required="true"
+          :error="errors.r_social"
+          :options="empresasOptions"
+          placeholder="Selecciona empresa"
+          class="col-span-2"
+        />
 
-              <v-col cols="12" md="3">
-                <v-switch 
-                  v-model="form.activo" 
-                  label="Activo" 
-                  inset 
-                />
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-card-text>
+        <label class="check col-span-2">
+          <input type="checkbox" v-model="form.activo" />
+          <span>Activo</span>
+        </label>
+      </form>
 
-        <v-card-actions>
-          <v-spacer />
-          <v-btn variant="text" @click="closeDialog">Cancelar</v-btn>
-          <v-btn class="btn-add" variant="flat" @click="save">Guardar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-snackbar v-model="snack.show" :timeout="2500">
-      {{ snack.text }}
-    </v-snackbar>
+      <template #footer>
+        <BaseButton variant="ghost" @click="closeDialog">Cancelar</BaseButton>
+        <BaseButton class="btn-add" variant="primary" :loading="saving" @click="save">
+          Guardar
+        </BaseButton>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
 <script setup>
   import { computed, onMounted, reactive, ref } from "vue";
+
+  import BaseToast from "@/components/ui/BaseToast.vue";
+  import BaseButton from "@/components/ui/BaseButton.vue";
+  import BaseInput from "@/components/ui/BaseInput.vue";
+  import BaseSelect from "@/components/ui/BaseSelect.vue";
+  import BaseModal from "@/components/ui/BaseModal.vue";
+  import DataTable from "@/components/ui/DataTable.vue";
+  import { useToast } from "@/composables/useToast";
+
+  const { show } = useToast();
+
   const rows = ref([]);
   const search = ref("");
   const dialog = ref(false);
-  const formRef = ref(null);
+  const saving = ref(false);
+
+  const empresas = ref([]);
+  const empresasLoading = ref(false);
+  const empresasLoaded = ref(false);
+
   const form = reactive(emptyForm());
-  // Cargar sucursales
-  async function loadSucursales() {
-    const r = await apiGet("/api/sucursales");
-    if (r.ok) rows.value = r.data;
-    else notify(r.msg || "No se pudo cargar");
-  }
-  
-  // Tabla
-  const headers = [
-    { title: "", key: "edit", sortable: false, width: 56 },
-    { title: "Empresa", key: "r_social" },  
-    { title: "Sucursal", key: "nombre" },
-    { title: "Domicilio", key: "domicilio" },
-    { title: "Extensión", key: "extension" },
-    { title: "Correo", key: "correo" },
-  ];
-
-  const filtered = computed(() => {
-    const q = search.value.trim().toLowerCase();
-    if (!q) return rows.value;
-
-    return rows.value.filter((r) =>
-      [r.r_social, r.nombre, r.domicilio, r.extension, r.correo]
-        .filter(Boolean)
-        .some((x) => String(x).toLowerCase().includes(q))
-    );
-  });
+  const errors = reactive(emptyErrors());
 
   function emptyForm() {
     return {
       id: null,
-      r_social: null,   
+      r_social: "", 
       nombre: "",
       domicilio: "",
       telefono1: "",
       telefono2: "",
       extension: "",
       correo: "",
-      altitud: null,
-      latitud: null,
+      altitud: "",
+      latitud: "",
       activo: true,
     };
   }
 
-  function rowProps({ index }) {
-    return { class: index % 2 === 0 ? "row-even" : "row-odd" };
+  function emptyErrors() {
+    return {
+      r_social: "",
+      nombre: "",
+      domicilio: "",
+      extension: "",
+      correo: "",
+    };
   }
 
-  const rules = {
-    required: (v) => (!!v && String(v).trim().length > 0) || "El Campo es requerido",
-    email: (v) => {
-      if (!v) return true;
-      return /.+@.+\..+/.test(v) || "Correo inválido";
-    },
-  };
+  const columns = [
+    { key: "r_social", label: "Empresa", sortable: true },
+    { key: "nombre", label: "Sucursal", sortable: true },
+    { key: "domicilio", label: "Domicilio", sortable: true },
+    { key: "extension", label: "Extensión", sortable: true },
+    { key: "correo", label: "Correo", sortable: true },
+  ];
+  
+  const filtered = computed(() => {
+    const q = search.value.trim().toUpperCase();
+    if (!q) return rows.value;
 
-  const snack = reactive({ show: false, text: "" });
-  function notify(text) {
-    snack.text = text;
-    snack.show = true;
-  }
+    return rows.value.filter((r) =>
+      [r.r_social, r.nombre, r.domicilio, r.extension, r.correo]
+        .filter(Boolean)
+        .some((x) => String(x).toUpperCase().includes(q))
+    );
+  });
+
+  
+  const empresasOptions = computed(() =>
+    empresas.value.map((e) => ({
+      value: String(e.id),
+      label: e.ncorto,
+    }))
+  );
 
   async function apiGet(url) {
     const res = await fetch(url);
@@ -253,14 +221,15 @@
     return res.json();
   }
 
-  const empresas = ref([]); 
-  const empresasLoading = ref(false);
-  const empresasLoaded = ref(false);
-  
-  async function ensureEmpresasLoaded() {
-    if (empresasLoaded.value) return;
+  // Cargar sucursales
+  async function loadSucursales() {
+    const r = await apiGet("/api/sucursales");
+    if (r.ok) rows.value = r.data;
+    else show(r.msg || "No se pudo cargar", "danger");
+  }
 
-    if (empresasLoading.value) return;
+  async function ensureEmpresasLoaded() {
+    if (empresasLoaded.value || empresasLoading.value) return;
 
     empresasLoading.value = true;
     try {
@@ -269,41 +238,43 @@
         empresas.value = r.data;
         empresasLoaded.value = true;
       } else {
-        notify(r.msg || "No se pudieron cargar empresas");
+        show(r.msg || "No se pudieron cargar empresas", "danger");
       }
     } finally {
       empresasLoading.value = false;
     }
   }
 
-
   onMounted(async () => {
     await loadSucursales();
-    // await ensureEmpresasLoaded();
   });
-
 
   async function openCreate() {
     Object.assign(form, emptyForm());
+    Object.assign(errors, emptyErrors());
     await ensureEmpresasLoaded();
     dialog.value = true;
   }
 
+  // Abrir modal para editar o crear
   async function openEdit(item) {
     await ensureEmpresasLoaded();
+    Object.assign(errors, emptyErrors());
+
     Object.assign(form, {
       id: item.id,
-      r_social: item.r_social_id ?? null, 
+      r_social: item.r_social_id != null ? String(item.r_social_id) : "",
       nombre: item.nombre ?? "",
       domicilio: item.domicilio ?? "",
       telefono1: item.telefono1 ?? "",
       telefono2: item.telefono2 ?? "",
       extension: item.extension ?? "",
       correo: item.correo ?? "",
-      altitud: item.altitud ?? null,
-      latitud: item.latitud ?? null,
+      altitud: item.altitud ?? "",
+      latitud: item.latitud ?? "",
       activo: item.activo ?? true,
     });
+
     dialog.value = true;
   }
 
@@ -311,38 +282,61 @@
     dialog.value = false;
   }
 
-  // Actualizar o Crear
-  async function save() {
-    const valid = await formRef.value?.validate?.();
-    if (valid && valid.valid === false) return;
+  // Validar requeridos
+  function validate() {
+    Object.assign(errors, emptyErrors());
 
-    if (!form.nombre.trim()) {
-      notify("Sucursal es requerida");
-      return;
-    }
+    if (!String(form.nombre).trim()) errors.nombre = "Sucursal es requerida";
+    if (!String(form.extension).trim()) errors.extension = "Extensión es requerida";
+    else if (String(form.extension).trim().length > 4) errors.extension = "Máximo 4 caracteres";
 
-    if (!form.r_social) {
-      notify("Empresa es requerida");
-      return;
-    }
+    if (!String(form.domicilio).trim()) errors.domicilio = "Domicilio es requerido";
 
-    if (!form.id) {
-      const r = await apiSend("/api/sucursales", "POST", form);
-      if (r.ok) {
-        notify("Sucursal agregada");
-        dialog.value = false;
-        await loadSucursales();
-      } else notify(r.msg || "Error insertando");
-    } else {
-      const r = await apiSend(`/api/sucursales/${form.id}`, "PUT", form);
-      if (r.ok) {
-        notify("Sucursal actualizada");
-        dialog.value = false;
-        await loadSucursales();
-      } else notify(r.msg || "Error actualizando");
-    }
+    if (!String(form.correo).trim()) errors.correo = "Correo es requerido";
+    else if (!/.+@.+\..+/.test(String(form.correo))) errors.correo = "Correo inválido";
+
+    if (!String(form.r_social).trim()) errors.r_social = "Empresa es requerida";
+
+    return !Object.values(errors).some(Boolean);
   }
 
+  // Guardar
+  async function save() {
+    if (saving.value) return;
+    if (!validate()) {
+      show("Revisa los campos marcados", "danger");
+      return;
+    }
+
+    saving.value = true;
+    try {
+      const payload = {
+        ...form,
+        r_social: Number(form.r_social), 
+        nombre: form.nombre.trim().toUpperCase(),
+        altitud: form.altitud === "" ? null : Number(form.altitud),
+        latitud: form.latitud === "" ? null : Number(form.latitud),
+      };
+
+      if (!payload.id) {
+        const r = await apiSend("/api/sucursales", "POST", payload);
+        if (r.ok) {
+          show("Sucursal agregada", "success");
+          dialog.value = false;
+          await loadSucursales();
+        } else show(r.msg || "Error insertando, marque a Sistemas", "danger");
+      } else {
+        const r = await apiSend(`/api/sucursales/${payload.id}`, "PUT", payload);
+        if (r.ok) {
+          show("Sucursal actualizada", "success");
+          dialog.value = false;
+          await loadSucursales();
+        } else show(r.msg || "No se pudo actualizar, marque a Sistemas", "warning");
+      }
+    } finally {
+      saving.value = false;
+    }
+  }
 </script>
 
 <style scoped>
@@ -357,9 +351,40 @@
     margin-bottom: 12px;
   }
 
+  .spacer {
+    flex: 1;
+  }
+
   .title {
     margin: 0;
     font-weight: 700;
+  }
+
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  @media (min-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .col-span-2 {
+      grid-column: span 2;
+    }
+  }
+
+
+  .check {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
   }
 
   .btn-add {
@@ -369,19 +394,9 @@
     font-weight: 700;
   }
 
-  .grid :deep(thead th) {
-    background: var(--pol-blue);
-    color: var(--white);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
+  /* estilo de zebra */
+  .row-even > td { background: var(--surface); }
+  .row-odd  > td { background: var(--row-alt); }
+  
 
-  .row-even :deep(td) {
-    background: var(--surface);
-  }
-
-  .row-odd :deep(td) {
-    background: var(--pol-blue-light);
-  }
 </style>
