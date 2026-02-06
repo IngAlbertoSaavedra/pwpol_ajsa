@@ -31,48 +31,5 @@
 </script>
 
 <style>
-  :root {
-    --white: #ffffff;
-    --black: #000000;
-
-    --brand-green: #04b500;
-    --brand-blue: #0689b0;
-    --pol-blue: #002455;
-    --pol-blue-light: #BBE0EF;
-
-    --bg: #f6f8fb;
-    --surface: #ffffff;
-    --text: #0f172a;
-    --muted: rgba(255, 255, 255, 0.75);
-    --gay-18: rgba(255, 255, 255, 0.18);
-    --shadow: rgba(0,0,0,0.14);
-
-    --danger: #ef4444;
-    --alert-bg: rgba(218, 5, 5, 0.25);
-    --alert-font: #DC0000;
-    --red: #8A244B;
-    --warning: #f59e0b;
-    --pol-yellow: #FFE766;
-    --success: #22c55e;
-  }
-
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  }
-
-
-  .splash-enter-active,
-  .splash-leave-active {
-    transition: opacity 0.25s ease;
-  }
-
-  .splash-enter-from,
-  .splash-leave-to {
-    opacity: 0;
-  }
+ 
 </style>
