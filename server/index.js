@@ -11,10 +11,11 @@ import empresasRoutes from "./routes/empresas.routes.js";
 const app = express();
 const PORT = 3001;
 
+app.use("/api/sucursales", sucursalesRoutes);
 app.use("/api/empresas", empresasRoutes);
 app.use(cors()); 
 app.use(express.json());
-app.use("/api/sucursales", sucursalesRoutes);
+
 
 app.post("/api/login", async (req, res) => {
   const usuario = String(req.body?.usuario || "").trim();

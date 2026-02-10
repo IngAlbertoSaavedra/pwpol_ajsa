@@ -61,7 +61,16 @@ export async function updateSucursal(req, res) {
 
     res.json({ ok: true, id: result.recordset?.[0]?.id });
   } catch (err) {
+
     console.error(err);
-    res.status(500).json({ ok: false, msg: "Error actualizando sucursal" });
+    res.status(500).json({
+    ok: false,
+    msg: "Error actualizando f d d d df dsucursal",
+    detail: err?.message,
+  });
+
+
+    // console.error(err);
+    // res.status(500).json({ ok: false, msg: "Error actualizando sucursal" });
   }
 }
