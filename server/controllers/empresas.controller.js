@@ -44,7 +44,7 @@ export async function updateEmpresa(req, res) {
 
     const result = await execSp("sp_empresas", [
       { name: "accion", type: sql.VarChar(20), value: "UPDATE" },
-      { name: "id", type: sql.Int, value: id },
+      { name: "id", type: sql.TinyInt, value: id },
       { name: "ncorto", type: sql.VarChar(100), value: e.ncorto },
       { name: "nombre", type: sql.VarChar(200), value: e.nombre ?? null },
       { name: "presentacion", type: sql.TinyInt, value: e.presentacion ?? null },

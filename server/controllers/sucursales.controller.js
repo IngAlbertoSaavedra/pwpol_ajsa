@@ -46,7 +46,7 @@ export async function updateSucursal(req, res) {
 
     const result = await execSp("sp_sucursales", [
       { name: "accion", type: sql.VarChar(20), value: "UPDATE" },
-      { name: "id", type: sql.Int, value: id },
+      { name: "id", type: sql.TinyInt, value: id },
       { name: "nombre", type: sql.VarChar(100), value: s.nombre },
       { name: "domicilio", type: sql.VarChar(200), value: s.domicilio ?? null },
       { name: "telefono1", type: sql.VarChar(30), value: s.telefono1 ?? null },
@@ -61,16 +61,7 @@ export async function updateSucursal(req, res) {
 
     res.json({ ok: true, id: result.recordset?.[0]?.id });
   } catch (err) {
-
     console.error(err);
-    res.status(500).json({
-    ok: false,
-    msg: "Error actualizando f d d d df dsucursal",
-    detail: err?.message,
-  });
-
-
-    // console.error(err);
-    // res.status(500).json({ ok: false, msg: "Error actualizando sucursal" });
+    res.status(500).json({ ok: false, msg: "Error actualizando sucursal" });
   }
 }
