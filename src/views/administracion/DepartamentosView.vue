@@ -3,7 +3,7 @@
     <BaseToast />
 
     <div class="toolbar">
-      <h2 class="title">Empresas</h2>
+      <h2 class="title">Departamentos</h2>
       <div class="spacer"></div>
 
       <BaseInput
@@ -53,39 +53,15 @@
 
     <BaseModal
       v-model:open="dialog"
-      :title="form.id ? 'Editar Empresa' : 'Agregar Empresa'"
+      :title="form.id ? 'Editar Departamento' : 'Agregar Departamento'"
     >
       <form class="form-grid" @submit.prevent="save">
-        <BaseInput
-          v-model="form.ncorto"
-          label="Nombre corto"
-          :required="true"
-          :error="errors.ncorto"
-          placeholder="mayúsculas"
-        />
-
         <BaseInput
           v-model="form.nombre"
           label="Nombre"
           :required="true"
           :error="errors.nombre"
           placeholder="mayúsculas"
-        />
-
-        <BaseInput
-          v-model="form.rfc"
-          label="RFC"
-          :required="true"
-          :error="errors.rfc"
-          placeholder="RFC"
-        />
-
-        <BaseInput
-          v-model="form.presentacion"
-          label="Presentación"
-          :required="true"
-          :error="errors.presentacion"
-          placeholder="número"
         />
 
         <label class="check col-span-2">
@@ -135,10 +111,7 @@ const errors = reactive(emptyErrors());
 function emptyForm() {
   return {
     id: null,
-    ncorto: '',
     nombre: '',
-    rfc: '',
-    presentacion: '',
     activo: true,
   };
 }
@@ -328,20 +301,20 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+    .content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    }
 
-.toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
+    .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    }
 
-.spacer {
-  flex: 1;
-}
+    .spacer {
+    flex: 1;
+    }
 </style>

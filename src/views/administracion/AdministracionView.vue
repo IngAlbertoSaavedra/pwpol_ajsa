@@ -24,6 +24,7 @@ const menus = [
     label: "CATÁLOGOS",
     items: [
       { title: "Sucursales", routeName: "AdministracionSucursales" },
+      { title: "Departamentos", routeName: "AdministracionDepartamentos" },
       { title: "Empresas", routeName: "AdministracionEmpresas" },
       { title: "Empleados", routeName: "AdministracionEmpleados" },
       { divider: true },
