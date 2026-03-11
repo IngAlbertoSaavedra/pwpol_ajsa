@@ -14,7 +14,10 @@
         style="max-width: 280px;"
       />
 
-      <BaseButton class="btn-add" variant="primary" @click="openCreate">
+      <BaseButton 
+        class="btn-add" 
+        variant="primary" 
+        @click="openCreate">
         AGREGAR
       </BaseButton>
     </div>
@@ -38,7 +41,6 @@
         </tr>
       </template>
 
-      <!-- sin esto no sale la etiqueta ACIONES-->
       <template #actions />
 
     </DataTable>
@@ -256,7 +258,7 @@
     dialog.value = true;
   }
 
-  // Abrir modal para editar o crear
+  
   async function openEdit(item) {
     await ensureEmpresasLoaded();
     Object.assign(errors, emptyErrors());
@@ -394,7 +396,6 @@
     font-weight: 700;
   }
 
-  /* estilo de zebra */
   .row-even > td { background: var(--surface); }
   .row-odd  > td { background: var(--row-alt); }
   
