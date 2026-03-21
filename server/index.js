@@ -7,6 +7,9 @@ import jwt from "jsonwebtoken";
 import { getPool } from "./db/db.js";
 import sucursalesRoutes from "./routes/sucursales.routes.js";
 import empresasRoutes from "./routes/empresas.routes.js";
+import departamentosRoutes from "./routes/departamentos.routes.js";
+import puestosRoutes from "./routes/puestos.routes.js";
+import empleadosRoutes from "./routes/empleados.routes.js";
 
 const app = express();
 const PORT = 3001;
@@ -17,6 +20,9 @@ app.use(express.json());
 
 app.use("/api/sucursales", sucursalesRoutes);
 app.use("/api/empresas", empresasRoutes);
+app.use("/api/departamentos", departamentosRoutes);
+app.use("/api/puestos", puestosRoutes);
+app.use("/api/empleados", empleadosRoutes);
 
 
 app.post("/api/login", async (req, res) => {

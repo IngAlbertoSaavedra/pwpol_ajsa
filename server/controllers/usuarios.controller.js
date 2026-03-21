@@ -26,7 +26,7 @@ export async function createUsuario(req, res) {
             {name: "usuario", type: sql.VarChar(50), value: u.usuario },
             {name: "clave", type: sql.VarChar(100), value: u.clave },
             {name: "activo", type: sql.Bit, value: u.activo ?? true }
-            // pendiente password_hash
+     
         ]);
     } catch (err) {
         console.error(err);

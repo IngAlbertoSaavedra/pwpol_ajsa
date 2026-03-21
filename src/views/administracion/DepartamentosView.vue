@@ -118,18 +118,12 @@ function emptyForm() {
 
 function emptyErrors() {
   return {
-    ncorto: '',
     nombre: '',
-    rfc: '',
-    presentacion: '',
   };
 }
 
 const columns = [
-  { key: 'ncorto', label: 'Nombre corto', sortable: true },
   { key: 'nombre', label: 'Nombre', sortable: true },
-  { key: 'rfc', label: 'RFC', sortable: true },
-  { key: 'presentacion', label: 'Presentación', sortable: true },
   { key: 'activo', label: 'Activo', sortable: true },
 ];
 
@@ -138,7 +132,7 @@ const filtered = computed(() => {
   if (!s) return rows.value;
 
   return rows.value.filter((r) =>
-    [r.ncorto, r.nombre, r.rfc, r.presentacion]
+    [r.nombre]
       .filter(Boolean)
       .some((e) => String(e).toUpperCase().includes(s))
   );
@@ -179,12 +173,12 @@ async function apiSend(url, method, body) {
   }
 }
 
-async function loadEmpresas() {
-  const r = await apiGet('/api/empresas');
+async function loadDepartamentos() {
+  const r = await apiGet('/api/departamentos');
   if (r.ok) {
     rows.value = r.data;
   } else {
-    show(r.msg || 'No se pudieron cargar las empresas.', 'danger');
+    show(r.msg || 'No se pudieron cargar los departamentos.', 'danger');
   }
 }
 
@@ -199,10 +193,7 @@ function openEdit(item) {
 
   Object.assign(form, {
     id: item.id,
-    ncorto: item.ncorto ?? '',
     nombre: item.nombre ?? '',
-    rfc: item.rfc ?? '',
-    presentacion: item.presentacion ?? '',
     activo: item.activo === 1 || item.activo === true,
   });
 
@@ -216,28 +207,10 @@ function closeDialog() {
 function validate() {
   Object.assign(errors, emptyErrors());
 
-  if (!String(form.ncorto).trim()) {
-    errors.ncorto = 'Nombre corto es requerido';
-  } else if (String(form.ncorto).trim().length > 20) {
-    errors.ncorto = 'Máximo 20 caracteres';
-  }
-
   if (!String(form.nombre).trim()) {
     errors.nombre = 'Nombre es requerido';
-  } else if (String(form.nombre).trim().length > 50) {
-    errors.nombre = 'Máximo 50 caracteres';
-  }
-
-  if (!String(form.rfc).trim()) {
-    errors.rfc = 'RFC es requerido';
-  } else if (String(form.rfc).trim().length > 15) {
-    errors.rfc = 'Máximo 15 caracteres';
-  }
-
-  if (!String(form.presentacion).trim()) {
-    errors.presentacion = 'Presentación es requerida';
-  } else if (isNaN(Number(form.presentacion))) {
-    errors.presentacion = 'Presentación debe ser un número';
+  } else if (String(form.nombre).trim().length > 100) {
+    errors.nombre = 'Máximo 100 caracteres';
   }
 
   return !Object.values(errors).some(Boolean);
@@ -256,47 +229,44 @@ async function save() {
   try {
     const payload = {
       ...form,
-      ncorto: String(form.ncorto).trim().toUpperCase(),
       nombre: String(form.nombre).trim().toUpperCase(),
-      rfc: String(form.rfc).trim().toUpperCase(),
-      presentacion: Number(form.presentacion),
     };
 
     let r;
 
     if (!payload.id) {
-      r = await apiSend('/api/empresas', 'POST', payload);
+      r = await apiSend('/api/departamentos', 'POST', payload);
 
       if (r.ok) {
-        show('Empresa agregada', 'success');
+        show('Departamento agregado', 'success');
         dialog.value = false;
-        await loadEmpresas();
+        await loadDepartamentos();
       } else {
         show(r.msg || 'Error insertando, marque a Sistemas', 'danger');
-        console.error('Error POST /api/empresas:', r);
+        console.error('Error POST /api/departamentos:', r);
       }
     } else {
-      r = await apiSend(`/api/empresas/${payload.id}`, 'PUT', payload);
+      r = await apiSend(`/api/departamentos/${payload.id}`, 'PUT', payload);
 
       if (r.ok) {
-        show('Empresa actualizada', 'success');
+        show('Departamento actualizado', 'success');
         dialog.value = false;
-        await loadEmpresas();
+        await loadDepartamentos();
       } else {
         show(r.msg || 'No se pudo actualizar, marque a Sistemas', 'warning');
-        console.error(`Error PUT /api/empresas/${payload.id}:`, r);
+        console.error(`Error PUT /api/departamentos/${payload.id}:`, r);
       }
     }
   } catch (error) {
-    console.error('Error al guardar empresa:', error);
-    show('Ocurrió un error al guardar la empresa', 'danger');
+    console.error('Error al guardar departamento:', error);
+    show('Ocurrió un error al guardar el departamento', 'danger');
   } finally {
     saving.value = false;
   }
 }
 
 onMounted(async () => {
-  await loadEmpresas();
+  await loadDepartamentos();
 });
 </script>
 

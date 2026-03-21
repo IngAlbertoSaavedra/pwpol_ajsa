@@ -27,6 +27,7 @@ const menus = [
       { title: "Departamentos", routeName: "AdministracionDepartamentos" },
       { title: "Empresas", routeName: "AdministracionEmpresas" },
       { title: "Empleados", routeName: "AdministracionEmpleados" },
+      { title: "Puestos", routeName: "AdministracionPuestos" },
       { divider: true },
       { title: "Usuarios", routeName: "AdministracionUsuarios" },
       { title: "Perfiles", routeName: "AdministracionPerfiles" },

@@ -87,7 +87,12 @@ const routes = [
         component: () => import("@/views/administracion/DepartamentosView.vue"),
         meta: { requiresAuth: true, viewDesc: "Departamentos" },
       },
-
+      {
+        path: "puestos",
+        name: "AdministracionPuestos",
+        component: () => import("@/views/administracion/PuestosView.vue"),
+        meta: { requiresAuth: true, viewDesc: "Puestos" },
+      },
       {
         path: "empresas",
         name: "AdministracionEmpresas",
