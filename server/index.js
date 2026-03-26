@@ -10,6 +10,7 @@ import empresasRoutes from "./routes/empresas.routes.js";
 import departamentosRoutes from "./routes/departamentos.routes.js";
 import puestosRoutes from "./routes/puestos.routes.js";
 import empleadosRoutes from "./routes/empleados.routes.js";
+import usuariosRoutes from "./routes/usuarios.routes.js";
 
 const app = express();
 const PORT = 3001;
@@ -23,6 +24,7 @@ app.use("/api/empresas", empresasRoutes);
 app.use("/api/departamentos", departamentosRoutes);
 app.use("/api/puestos", puestosRoutes);
 app.use("/api/empleados", empleadosRoutes);
+app.use("/api/usuarios", usuariosRoutes);
 
 
 app.post("/api/login", async (req, res) => {

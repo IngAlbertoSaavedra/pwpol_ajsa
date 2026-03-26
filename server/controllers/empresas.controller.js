@@ -58,3 +58,19 @@ export async function updateEmpresa(req, res) {
     res.status(500).json({ ok: false, msg: "Error actualizando Empresa" });
   }
 }
+
+export async function updateActivarEmpresa(req, res) {
+  try {
+    const id = Number(req.params.id);
+    const u = req.body;
+
+    const result = await exceSP("sp_empresas", [
+      { name: "accion", type: sql.VarChar(20), value: "SET_ACTIVO" },
+      { name: "id", type: sql.Int, value: id },
+      { name: "activo", type: sql.Bit, value: u.activo ?? true },
+    ]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ ok: false, msg: "Error actualizando estado de empresa" });
+  }
+}
