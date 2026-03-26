@@ -1,4 +1,4 @@
-import { execSp } from "server/db/execSp";
+import { execSp } from "../db/execSp.js";
 import sql from "mssql";
 
 export async function listEmpleados(req, res) {
