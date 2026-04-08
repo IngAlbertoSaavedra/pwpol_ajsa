@@ -43,7 +43,6 @@
     watch(
     () => props.open,
     (v) => {
-        // opcional: bloquear scroll cuando está abierto
         document.body.style.overflow = v ? 'hidden' : ''
     }
     )

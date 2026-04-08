@@ -1,20 +1,23 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
-import vuetify from "vite-plugin-vuetify";
 import path from "path";
 
-export default defineConfig({
-  base: "/pwpol_ajsa/",
-  plugins: [vue(), vuetify({ autoImport: true })],
-  resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
-  },
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+
+  return {
+    base: "/",
+    plugins: [vue()],
+    resolve: {
+      alias: { "@": path.resolve(__dirname, "./src") },
+    },
+    server: {
+      proxy: {
+        "/api": {
+          target: env.VITE_PROXY_TARGET || "http://localhost:3001",
+          changeOrigin: true,
+        },
       },
     },
-  },
+  };
 });

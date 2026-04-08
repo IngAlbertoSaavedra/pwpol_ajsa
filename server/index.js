@@ -13,7 +13,8 @@ import empleadosRoutes from "./routes/empleados.routes.js";
 import usuariosRoutes from "./routes/usuarios.routes.js";
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
+const HOST = "0.0.0.0";
 
 
 app.use(cors()); 
@@ -75,8 +76,14 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.json({
+    ok: true,
+    mensaje: "API pwpol-ajsa funcionando"
+  });
+});
 
 
-app.listen(PORT, () => {
-  console.log(`API corriendo en http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`API corriendo en http://${HOST}:${PORT}`);
 });

@@ -12,9 +12,9 @@
         </div>
 
         <ul class="login-bullets">
-          <li>Validación contra base de datos</li>
-          <li>Acceso restringido por sesión</li>
-          <li>Interfaz clara y accesible</li>
+          <li>Control vehicular</li>
+          <li>Faltas administrativas</li>
+          <li>Modulo de reportes</li>
         </ul>
       </aside>
 

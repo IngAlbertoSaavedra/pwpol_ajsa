@@ -1,265 +1,236 @@
-
 <template>
-  <v-container fluid class="pa-4">
-    <!-- Encabezado / Datos del vehículo -->
-    <v-card class="mb-4" elevation="2">
-      <v-card-text>
-        <v-row align="center" class="mb-2">
-          <!-- Clave vehículo (entrada principal) -->
-          <v-col cols="12" md="4">
-            <div class="d-flex align-center">
-              <div class="clave-box mr-4">
-                <div class="clave-label">Clave</div>
-                <div class="clave-value">{{ vehiculo.clave || "—" }}</div>
-              </div>
-
-              <div class="flex-grow-1">
-                <v-text-field
-                  v-model.trim="claveInput"
-                  label="Clave de Vehículo"
-                  placeholder="Ej. SYS-001"
-                  variant="outlined"
-                  density="compact"
-                  :loading="loadingVehiculo"
-                  :error="!!vehiculoError"
-                  :error-messages="vehiculoError"
-                  @keyup.enter="buscarVehiculo"
-                >
-                  <template #append-inner>
-                    <v-btn
-                      size="small"
-                      variant="text"
-                      :disabled="!claveInput || loadingVehiculo"
-                      @click="buscarVehiculo"
-                    >
-                      Buscar
-                    </v-btn>
-                  </template>
-                </v-text-field>
-                <div class="hint">Escribe la clave y presiona <strong>Enter</strong>.</div>
-              </div>
+  <section class="page">
+    <div class="card">
+      <div class="card__body">
+        <div class="vehicle-header">
+          <div class="clave-panel">
+            <div class="clave-box">
+              <div class="clave-label">Clave</div>
+              <div class="clave-value">{{ vehiculo.clave || "—" }}</div>
             </div>
-          </v-col>
 
-          <!-- Datos consultados -->
-          <v-col cols="12" md="8">
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <div class="kv">
-                  <div class="k">Placa</div>
-                  <div class="v">{{ vehiculo.placa || "—" }}</div>
-                </div>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <div class="kv">
-                  <div class="k">Último Kms registrado</div>
-                  <div class="v">{{ formatInt(vehiculo.ultimoKm) }}</div>
-                </div>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <div class="kv">
-                  <div class="k">Rend. Mín.</div>
-                  <div class="v">{{ formatNum(vehiculo.rendMin) }}</div>
-                </div>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <div class="kv">
-                  <div class="k">Rend. Máx.</div>
-                  <div class="v">{{ formatNum(vehiculo.rendMax) }}</div>
-                </div>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <div class="kv">
-                  <div class="k">Rend. Prom.</div>
-                  <div class="v">{{ formatNum(vehiculo.rendProm) }}</div>
-                </div>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <div class="kv">
-                  <div class="k">Recorrido Km.</div>
-                  <div class="v">{{ formatNum(recorridoKm) }}</div>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+            <div class="clave-search">
+              <label class="label" for="claveVehiculo">Clave de Vehículo</label>
 
-    <!-- Información de la carga -->
-    <v-card elevation="2">
-      <v-card-title class="section-title">Información de la Carga</v-card-title>
-      <v-divider />
+              <div class="search-row">
+                <input
+                  id="claveVehiculo"
+                  v-model.trim="claveInput"
+                  type="text"
+                  class="input"
+                  :class="{ 'has-error': !!vehiculoError }"
+                  placeholder="Ej. SYS-001"
+                  :disabled="loadingVehiculo"
+                  @keyup.enter="buscarVehiculo"
+                />
 
-      <v-card-text>
-        <v-row>
-          <!-- Fecha -->
-          <v-col cols="12" sm="6" md="3">
-            <v-text-field
+                <button
+                  type="button"
+                  class="btn btn--secondary"
+                  :disabled="!claveInput || loadingVehiculo"
+                  @click="buscarVehiculo"
+                >
+                  <span v-if="loadingVehiculo" class="spinner"></span>
+                  Buscar
+                </button>
+              </div>
+
+              <p class="hint">
+                Escribe la clave y presiona <strong>Enter</strong>.
+              </p>
+              <p v-if="vehiculoError" class="error">{{ vehiculoError }}</p>
+            </div>
+          </div>
+
+          <div class="vehicle-data">
+            <div class="kv">
+              <div class="k">Placa</div>
+              <div class="v">{{ vehiculo.placa || "—" }}</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Último Km registrado</div>
+              <div class="v">{{ formatInt(vehiculo.ultimoKm) }}</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Rend. mín.</div>
+              <div class="v">{{ formatNum(vehiculo.rendMin) }}</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Rend. máx.</div>
+              <div class="v">{{ formatNum(vehiculo.rendMax) }}</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Rend. prom.</div>
+              <div class="v">{{ formatNum(vehiculo.rendProm) }}</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Recorrido Km</div>
+              <div class="v">{{ formatNum(recorridoKm) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__header">
+        <h3 class="card__title">Información de la Carga</h3>
+      </div>
+
+      <div class="card__body">
+        <div class="form-grid">
+          <div class="field">
+            <label class="label" for="fecha">Fecha <span class="req">*</span></label>
+            <input
+              id="fecha"
               v-model="form.fecha"
               type="date"
-              label="Fecha"
-              variant="outlined"
-              density="compact"
+              class="input"
+              :class="{ 'has-error': touched && !form.fecha }"
               :disabled="!vehiculoListo"
-              :error="touched && !form.fecha"
             />
-            <div v-if="touched && !form.fecha" class="req">* requerido</div>
-          </v-col>
+            <p v-if="touched && !form.fecha" class="error">Campo requerido.</p>
+          </div>
 
-          <!-- Hora -->
-          <v-col cols="12" sm="6" md="3">
-            <v-text-field
+          <div class="field">
+            <label class="label" for="hora">Hora</label>
+            <input
+              id="hora"
               v-model="form.hora"
               type="time"
-              label="Hora"
-              variant="outlined"
-              density="compact"
+              class="input"
               :disabled="!vehiculoListo"
             />
-          </v-col>
+          </div>
 
-          <!-- Combustible (litros) -->
-          <v-col cols="12" sm="6" md="3">
-            <v-text-field
+          <div class="field">
+            <label class="label" for="litros">Combustible (Litros) <span class="req">*</span></label>
+            <input
+              id="litros"
               v-model="form.litros"
-              label="Combustible (Litros)"
-              placeholder="0.00"
-              variant="outlined"
-              density="compact"
-              :disabled="!vehiculoListo"
+              type="number"
+              step="0.01"
+              min="0"
               inputmode="decimal"
-              :error="touched && !isPositive(form.litros)"
+              class="input"
+              :class="{ 'has-error': touched && !isPositive(form.litros) }"
+              placeholder="0.00"
+              :disabled="!vehiculoListo"
             />
-            <div v-if="touched && !isPositive(form.litros)" class="req">* requerido</div>
-          </v-col>
+            <p v-if="touched && !isPositive(form.litros)" class="error">Ingresa un valor mayor a cero.</p>
+          </div>
 
-          <!-- Importe -->
-          <v-col cols="12" sm="6" md="3">
-            <v-text-field
+          <div class="field">
+            <label class="label" for="importe">Importe <span class="req">*</span></label>
+            <input
+              id="importe"
               v-model="form.importe"
-              label="Importe"
-              placeholder="0.00"
-              variant="outlined"
-              density="compact"
-              :disabled="!vehiculoListo"
+              type="number"
+              step="0.01"
+              min="0"
               inputmode="decimal"
-              :error="touched && !isPositive(form.importe)"
-            />
-            <div v-if="touched && !isPositive(form.importe)" class="req">* requerido</div>
-          </v-col>
-        </v-row>
-
-        <v-row class="mt-2">
-          <!-- Precio x Litro (calculado) -->
-          <v-col cols="12" sm="6" md="3">
-            <v-text-field
-              :model-value="formatNum(precioPorLitro)"
-              label="Precio x Litro"
-              variant="outlined"
-              density="compact"
-              readonly
-            />
-          </v-col>
-
-          <!-- Kilometraje (actual) -->
-          <v-col cols="12" sm="6" md="3">
-            <v-text-field
-              v-model="form.kilometraje"
-              label="Kilometraje (Actual)"
-              placeholder="Sin decimales"
-              variant="outlined"
-              density="compact"
+              class="input"
+              :class="{ 'has-error': touched && !isPositive(form.importe) }"
+              placeholder="0.00"
               :disabled="!vehiculoListo"
+            />
+            <p v-if="touched && !isPositive(form.importe)" class="error">Ingresa un valor mayor a cero.</p>
+          </div>
+
+          <div class="field">
+            <label class="label" for="precioLitro">Precio x Litro</label>
+            <input
+              id="precioLitro"
+              :value="formatNum(precioPorLitro)"
+              type="text"
+              class="input input--readonly"
+              readonly
+            />
+          </div>
+
+          <div class="field">
+            <label class="label" for="kilometraje">Kilometraje (Actual) <span class="req">*</span></label>
+            <input
+              id="kilometraje"
+              v-model="form.kilometraje"
+              type="number"
+              step="1"
+              min="0"
               inputmode="numeric"
-              :error="touched && !isPositiveInt(form.kilometraje)"
+              class="input"
+              :class="{ 'has-error': touched && !isPositiveInt(form.kilometraje) }"
+              placeholder="Sin decimales"
+              :disabled="!vehiculoListo"
             />
-            <div v-if="touched && !isPositiveInt(form.kilometraje)" class="req">* requerido</div>
-          </v-col>
+            <p v-if="touched && !isPositiveInt(form.kilometraje)" class="error">Ingresa un entero mayor a cero.</p>
+          </div>
 
-          <!-- Distancia recorrida (calculado) -->
-          <v-col cols="12" sm="6" md="3">
-            <v-text-field
-              :model-value="formatNum(recorridoKm)"
-              label="Recorrido Km."
-              variant="outlined"
-              density="compact"
+          <div class="field">
+            <label class="label" for="recorrido">Recorrido Km</label>
+            <input
+              id="recorrido"
+              :value="formatNum(recorridoKm)"
+              type="text"
+              class="input input--readonly"
               readonly
             />
-          </v-col>
+          </div>
 
-          <!-- Rendimiento (calculado) -->
-          <v-col cols="12" sm="6" md="3">
-            <v-text-field
-              :model-value="formatNum(rendimiento)"
-              label="Rend. Kms / Lts."
-              variant="outlined"
-              density="compact"
+          <div class="field">
+            <label class="label" for="rendimiento">Rend. Kms / Lts.</label>
+            <input
+              id="rendimiento"
+              :value="formatNum(rendimiento)"
+              type="text"
+              class="input input--readonly"
               readonly
             />
-          </v-col>
-        </v-row>
+          </div>
+        </div>
 
-        <v-divider class="my-4" />
-
-        <!-- Acciones -->
-        <div class="d-flex justify-space-between flex-wrap ga-2">
-          <v-btn
-            variant="outlined"
-            prepend-icon="mdi-broom"
+        <div class="actions">
+          <button
+            type="button"
+            class="btn btn--ghost"
             @click="limpiar"
           >
             Limpiar
-          </v-btn>
+          </button>
 
-          <div class="d-flex ga-2">
-            <v-alert
-              v-if="saveError"
-              type="error"
-              variant="tonal"
-              density="compact"
-              class="py-2"
-            >
+          <div class="actions__right">
+            <div v-if="saveError" class="status status--error">
               {{ saveError }}
-            </v-alert>
+            </div>
 
-            <v-alert
-              v-if="saveOk"
-              type="success"
-              variant="tonal"
-              density="compact"
-              class="py-2"
-            >
+            <div v-if="saveOk" class="status status--success">
               Guardado correctamente.
-            </v-alert>
+            </div>
 
-            <v-btn
-              color="primary"
-              prepend-icon="mdi-content-save"
-              :loading="saving"
+            <button
+              type="button"
+              class="btn btn--primary"
               :disabled="!vehiculoListo || saving"
               @click="guardar"
             >
+              <span v-if="saving" class="spinner spinner--light"></span>
               Guardar
-            </v-btn>
+            </button>
           </div>
         </div>
-      </v-card-text>
-    </v-card>
-  </v-container>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup>
 import { computed, reactive, ref } from "vue";
 
-/**
- * Ajusta estas URLs a tus endpoints reales.
- * - Buscar vehículo: GET /api/vehiculos/:clave
- * - Guardar consumo: POST /api/consumos
- *
- * Si tu backend usa otra base (/vehiculos, /captura-consumo, etc.), cámbialo aquí.
- */
-const API_BASE = import.meta.env.VITE_API_URL || ""; // opcional
+const API_BASE = import.meta.env.VITE_API_URL || "";
 
 const claveInput = ref("");
 const loadingVehiculo = ref(false);
@@ -268,7 +239,7 @@ const vehiculoError = ref("");
 const vehiculo = reactive({
   clave: "",
   placa: "",
-  ultimoKm: null,  // número
+  ultimoKm: null,
   rendMin: null,
   rendMax: null,
   rendProm: null,
@@ -289,7 +260,6 @@ const saveOk = ref(false);
 
 const vehiculoListo = computed(() => !!vehiculo.clave);
 
-/** 3) precio x litro = importe / litros */
 const precioPorLitro = computed(() => {
   const litros = toNumber(form.litros);
   const importe = toNumber(form.importe);
@@ -297,54 +267,50 @@ const precioPorLitro = computed(() => {
   return importe / litros;
 });
 
-/** 4) recorrido = kmActual - ultimoKm */
 const recorridoKm = computed(() => {
   const kmActual = toInt(form.kilometraje);
   const kmAnterior = toInt(vehiculo.ultimoKm);
+
   if (!kmActual || kmAnterior == null) return 0;
+
   const diff = kmActual - kmAnterior;
   return diff > 0 ? diff : 0;
 });
 
-/** 4) rendimiento = recorrido / litros */
 const rendimiento = computed(() => {
   const litros = toNumber(form.litros);
-  const rec = toNumber(recorridoKm.value);
-  if (!litros || !rec) return 0;
-  return rec / litros;
+  const recorrido = toNumber(recorridoKm.value);
+
+  if (!litros || !recorrido) return 0;
+  return recorrido / litros;
 });
 
-/** 1) buscar vehículo al Enter */
 async function buscarVehiculo() {
   saveOk.value = false;
   saveError.value = "";
   vehiculoError.value = "";
 
   const clave = (claveInput.value || "").trim();
+
   if (!clave) {
     vehiculoError.value = "Ingresa la clave del vehículo.";
     return;
   }
 
   loadingVehiculo.value = true;
+
   try {
-    // Ejemplo de respuesta esperada del backend:
-    // {
-    //   clave: "SYS-001",
-    //   placa: "UTJ030A",
-    //   ultimoKm: 393951,
-    //   rendMin: 12,
-    //   rendMax: 15,
-    //   rendProm: 0
-    // }
     const res = await fetch(`${API_BASE}/api/vehiculos/${encodeURIComponent(clave)}`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
-      // si usas auth por token, agrega Authorization aquí
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (!res.ok) {
-      if (res.status === 404) throw new Error("Vehículo no encontrado.");
+      if (res.status === 404) {
+        throw new Error("Vehículo no encontrado.");
+      }
       throw new Error("No se pudo consultar el vehículo.");
     }
 
@@ -357,14 +323,13 @@ async function buscarVehiculo() {
     vehiculo.rendMax = data.rendMax ?? data.rend_max ?? null;
     vehiculo.rendProm = data.rendProm ?? data.rend_prom ?? null;
 
-    // Limpia campos de captura al cargar vehículo
     form.litros = "";
     form.importe = "";
     form.kilometraje = "";
     touched.value = false;
-  } catch (e) {
-    vehiculoError.value = e?.message || "Error consultando vehículo.";
-    // resetea datos si falla
+  } catch (error) {
+    vehiculoError.value = error?.message || "Error consultando vehículo.";
+
     vehiculo.clave = "";
     vehiculo.placa = "";
     vehiculo.ultimoKm = null;
@@ -376,7 +341,6 @@ async function buscarVehiculo() {
   }
 }
 
-/** 2) validación requeridos */
 function validar() {
   touched.value = true;
   saveError.value = "";
@@ -386,15 +350,16 @@ function validar() {
     saveError.value = "Primero consulta un vehículo por clave.";
     return false;
   }
+
   if (!form.fecha) return false;
   if (!isPositive(form.litros)) return false;
   if (!isPositive(form.importe)) return false;
   if (!isPositiveInt(form.kilometraje)) return false;
 
-  // Validación útil: km actual debe ser mayor que el último registrado (si existe)
   if (vehiculo.ultimoKm != null) {
     const kmActual = toInt(form.kilometraje);
     const kmAnterior = toInt(vehiculo.ultimoKm);
+
     if (kmActual <= kmAnterior) {
       saveError.value = "El kilometraje actual debe ser mayor al último km registrado.";
       return false;
@@ -404,7 +369,6 @@ function validar() {
   return true;
 }
 
-/** 5) Guardar en BD */
 async function guardar() {
   if (!validar()) return;
 
@@ -419,48 +383,57 @@ async function guardar() {
       hora: form.hora || null,
       litros: toNumber(form.litros),
       importe: toNumber(form.importe),
-      precioLitro: precioPorLitro.value,
+      precioLitro: toNumber(precioPorLitro.value),
       kilometrajeActual: toInt(form.kilometraje),
       kilometrajeAnterior: toInt(vehiculo.ultimoKm),
-      recorridoKm: recorridoKm.value,
-      rendimiento: rendimiento.value,
-      placa: vehiculo.placa, // opcional (por si lo quieres guardar)
+      recorridoKm: toNumber(recorridoKm.value),
+      rendimiento: toNumber(rendimiento.value),
     };
 
     const res = await fetch(`${API_BASE}/api/consumos`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(payload),
-      // Authorization si aplica
     });
 
     if (!res.ok) {
-      const txt = await safeText(res);
-      throw new Error(txt || "No se pudo guardar la captura.");
+      throw new Error("No se pudo guardar la carga.");
     }
 
-    // si el backend regresa el nuevo último km, actualízalo
-    // const saved = await res.json().catch(() => null);
-    // if (saved?.ultimoKm) vehiculo.ultimoKm = saved.ultimoKm;
-
     saveOk.value = true;
+    saveError.value = "";
 
-    // comportamiento típico: limpiar inputs de captura pero mantener el vehículo
+    vehiculo.ultimoKm = toInt(form.kilometraje);
+    vehiculo.rendProm = toNumber(rendimiento.value);
+
     form.litros = "";
     form.importe = "";
     form.kilometraje = "";
+    form.hora = nowTime();
     touched.value = false;
-  } catch (e) {
-    saveError.value = e?.message || "Error al guardar.";
+  } catch (error) {
+    saveError.value = error?.message || "Ocurrió un error al guardar.";
+    saveOk.value = false;
   } finally {
     saving.value = false;
   }
 }
 
 function limpiar() {
-  saveOk.value = false;
   saveError.value = "";
+  saveOk.value = false;
+  vehiculoError.value = "";
   touched.value = false;
+
+  claveInput.value = "";
+  vehiculo.clave = "";
+  vehiculo.placa = "";
+  vehiculo.ultimoKm = null;
+  vehiculo.rendMin = null;
+  vehiculo.rendMax = null;
+  vehiculo.rendProm = null;
 
   form.fecha = todayISO();
   form.hora = nowTime();
@@ -469,98 +442,257 @@ function limpiar() {
   form.kilometraje = "";
 }
 
-/* Helpers */
-function toNumber(v) {
-  if (v === null || v === undefined) return 0;
-  const n = Number(String(v).replace(",", "."));
-  return Number.isFinite(n) ? n : 0;
+function isPositive(value) {
+  return toNumber(value) > 0;
 }
-function toInt(v) {
-  const n = parseInt(String(v ?? "").replace(/[^\d]/g, ""), 10);
-  return Number.isFinite(n) ? n : 0;
+
+function isPositiveInt(value) {
+  return Number.isInteger(toInt(value)) && toInt(value) > 0;
 }
-function isPositive(v) {
-  return toNumber(v) > 0;
+
+function toNumber(value) {
+  if (value === null || value === undefined || value === "") return 0;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
-function isPositiveInt(v) {
-  return toInt(v) > 0;
+
+function toInt(value) {
+  if (value === null || value === undefined || value === "") return 0;
+  const parsed = parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
-function formatNum(v) {
-  const n = Number(v);
-  if (!Number.isFinite(n)) return "—";
-  return n.toLocaleString("es-MX", { maximumFractionDigits: 2 });
+
+function formatNum(value) {
+  const num = toNumber(value);
+  if (!num) return "0.00";
+  return num.toLocaleString("es-MX", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
-function formatInt(v) {
-  const n = Number(v);
-  if (!Number.isFinite(n)) return "—";
-  return n.toLocaleString("es-MX", { maximumFractionDigits: 0 });
+
+function formatInt(value) {
+  const num = toInt(value);
+  if (!num) return "0";
+  return num.toLocaleString("es-MX");
 }
+
 function todayISO() {
-  const d = new Date();
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
+
 function nowTime() {
-  const d = new Date();
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mi = String(d.getMinutes()).padStart(2, "0");
-  return `${hh}:${mi}`;
-}
-async function safeText(res) {
-  try {
-    const t = await res.text();
-    return (t || "").slice(0, 300);
-  } catch {
-    return "";
-  }
+  const date = new Date();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
 }
 </script>
 
 <style scoped>
-.section-title {
-  font-weight: 700;
-  font-size: 14px;
+.page {
+  display: grid;
+  gap: 16px;
+  padding: 0;
 }
 
-.hint {
-  font-size: 12px;
-  opacity: 0.7;
-  margin-top: -6px;
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
 }
 
-.req {
-  color: #e53935;
-  font-size: 12px;
-  margin-top: 4px;
+.card__header {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(187, 224, 239, 0.28);
 }
 
-/* Caja tipo "SYS-001" */
-.clave-box {
-  width: 140px;
-  border: 1px solid rgba(0,0,0,0.2);
-  background: #f2f2f2;
-  padding: 6px 10px;
-  border-radius: 4px;
-}
-.clave-label {
-  font-size: 11px;
-  opacity: 0.7;
-  line-height: 1.2;
-}
-.clave-value {
-  font-weight: 800;
+.card__title {
+  margin: 0;
+  color: var(--pol-blue);
   font-size: 18px;
+  font-weight: 800;
 }
 
-/* Key-Value */
-.kv .k {
-  font-size: 12px;
-  opacity: 0.7;
+.card__body {
+  padding: 18px;
 }
-.kv .v {
-  font-size: 14px;
+
+.vehicle-header {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.clave-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.clave-box {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--pol-blue), var(--brand-blue));
+  color: var(--white);
+  padding: 16px;
+  min-height: 120px;
+  display: grid;
+  align-content: center;
+  box-shadow: 0 12px 30px rgba(0, 36, 85, 0.18);
+}
+
+.clave-label {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+.clave-value {
+  font-size: 28px;
+  font-weight: 800;
+  word-break: break-word;
+}
+
+.clave-search {
+  display: grid;
+  gap: 6px;
+}
+
+.search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.vehicle-data {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.kv {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  background: var(--surface);
+}
+
+.k {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.v {
+  font-size: 20px;
   font-weight: 700;
+  color: var(--text);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.input--readonly {
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.actions__right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.status {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.status--error {
+  color: var(--alert-font);
+  background: var(--alert-bg);
+  border-color: var(--red);
+}
+
+.status--success {
+  color: #166534;
+  background: rgba(34, 197, 94, 0.12);
+  border-color: var(--success);
+}
+
+.spinner--light {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: rgba(255, 255, 255, 0.95);
+}
+
+@media (max-width: 1200px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .vehicle-data {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .vehicle-header {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .card__body,
+  .card__header {
+    padding: 14px;
+  }
+
+  .search-row,
+  .form-grid,
+  .vehicle-data {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions__right {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .actions__right > * {
+    width: 100%;
+  }
 }
 </style>

@@ -1,118 +1,275 @@
 <template>
-  <v-toolbar flat density="comfortable" class="topbar">
+  <nav class="topbar" aria-label="Menú superior">
     <div class="menu-row">
-      <v-menu
+      <div
         v-for="(menu, mIndex) in menus"
         :key="mIndex"
-        open-on-hover
-        location="bottom"
-        offset="6"
+        class="menu-group"
+        @mouseenter="openMenu(mIndex)"
+        @mouseleave="scheduleClose(mIndex)"
       >
-        <template #activator="{ props }">
-          <button class="topbar-item" v-bind="props" type="button">
-            <v-icon size="18" class="mr-2">{{ menu.icon }}</v-icon>
-            <span class="label">{{ menu.label }}</span>
-            <v-icon size="18" class="ml-1">mdi-menu-down</v-icon>
-          </button>
-        </template>
+        <button
+          type="button"
+          class="topbar-item"
+          :class="{ 'topbar-item--open': openIndex === mIndex }"
+          @click="toggleMenu(mIndex)"
+        >
+          <span class="label">{{ menu.label }}</span>
+          <span class="caret" :class="{ 'caret--open': openIndex === mIndex }">▾</span>
+        </button>
 
-        <v-list density="compact" class="dropdown">
+        <div
+          v-if="openIndex === mIndex"
+          class="dropdown"
+          role="menu"
+        >
           <template v-for="(item, iIndex) in menu.items" :key="iIndex">
-            <v-divider v-if="item.divider" class="my-1" />
+            <div v-if="item.divider" class="dropdown-divider"></div>
 
-            <v-list-item
+            <button
               v-else
+              type="button"
+              class="dropdown-item"
+              :class="{
+                'dropdown-item--active': isActive(item.routeName),
+                'dropdown-item--disabled': !!item.disabled
+              }"
               :disabled="!!item.disabled"
-              :class="{ 'active-item': isActive(item.routeName) }"
               @click="goTo(item.routeName, item.disabled)"
             >
-              <v-list-item-title class="dropdown-title">
-                {{ item.title }}
-              </v-list-item-title>
-            </v-list-item>
+              {{ item.title }}
+            </button>
           </template>
-        </v-list>
-      </v-menu>
+        </div>
+      </div>
     </div>
-  </v-toolbar>
+  </nav>
 </template>
 
 <script setup>
-import { useRouter, useRoute } from "vue-router";
+  import { ref, onMounted, onBeforeUnmount } from "vue";
+  import { useRouter, useRoute } from "vue-router";
 
-const props = defineProps({
-  menus: {
-    type: Array,
-    required: true,
-  },
-});
+  defineProps({
+    menus: {
+      type: Array,
+      required: true,
+    },
+  });
 
-const router = useRouter();
-const route = useRoute();
+  const router = useRouter();
+  const route = useRoute();
 
-function isActive(routeName) {
-  return routeName && route.name === routeName;
-}
+  const openIndex = ref(null);
+  let closeTimer = null;
 
-function goTo(name, disabled) {
-  if (!name || disabled) return;
-  router.push({ name });
-}
+  function isActive(routeName) {
+    return !!routeName && route.name === routeName;
+  }
+
+  function clearCloseTimer() {
+    if (closeTimer) {
+      clearTimeout(closeTimer);
+      closeTimer = null;
+    }
+  }
+
+  function openMenu(index) {
+    clearCloseTimer();
+    openIndex.value = index;
+  }
+
+  function scheduleClose(index) {
+    clearCloseTimer();
+    closeTimer = setTimeout(() => {
+      if (openIndex.value === index) {
+        openIndex.value = null;
+      }
+    }, 180);
+  }
+
+  function toggleMenu(index) {
+    clearCloseTimer();
+    openIndex.value = openIndex.value === index ? null : index;
+  }
+
+  function goTo(name, disabled) {
+    if (!name || disabled) return;
+    clearCloseTimer();
+    openIndex.value = null;
+    router.push({ name });
+  }
+
+  function handleClickOutside(event) {
+    const menuRoot = event.target.closest(".menu-group");
+    if (!menuRoot) {
+      clearCloseTimer();
+      openIndex.value = null;
+    }
+  }
+
+  function handleEscape(event) {
+    if (event.key === "Escape") {
+      clearCloseTimer();
+      openIndex.value = null;
+    }
+  }
+
+  onMounted(() => {
+    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+  });
+
+  onBeforeUnmount(() => {
+    clearCloseTimer();
+    document.removeEventListener("click", handleClickOutside);
+    document.removeEventListener("keydown", handleEscape);
+  });
 </script>
 
 <style scoped>
-.topbar {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 8px 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+  }
 
-.menu-row {
-  display: flex;
-  gap: 18px;
-  align-items: center;
-  padding-left: 12px;
-}
+  .menu-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
 
-.topbar-item {
-  appearance: none;
-  border: none;
-  background: transparent;
-  cursor: pointer;
+  .menu-group {
+    position: relative;
+  }
 
-  display: inline-flex;
-  align-items: center;
+  .topbar-item {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--pol-blue);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
 
-  height: 40px;
-  padding: 0 6px;
+  .topbar-item:hover,
+  .topbar-item--open {
+    background: var(--pol-blue-light);
+    border-color: var(--border);
+    color: var(--pol-blue);
+  }
 
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 600;
-  font-size: 12px;
+  .label {
+    white-space: nowrap;
+  }
 
-  color: rgba(0, 0, 0, 0.65);
-}
+  .caret {
+    font-size: 12px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+  }
 
-.topbar-item:hover {
-  color: rgba(0, 0, 0, 0.9);
-}
+  .caret--open {
+    transform: rotate(180deg);
+  }
 
-.dropdown {
-  min-width: 220px;
-}
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 14px 14px;
+    padding: 8px;
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.12);
+    z-index: 50;
+  }
 
-.dropdown-title {
-  font-size: 13px;
-}
+  .dropdown-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 2px;
+  }
 
-.active-item {
-  background: rgba(0, 0, 0, 0.06);
-}
+  .dropdown-item {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
 
-.active-item :deep(.v-list-item-title) {
-  font-weight: 700;
-}
+  .dropdown-item:hover {
+    background: var(--row-alt);
+  }
 
-.active-item :deep(.v-list-item__overlay) {
-  opacity: 0 !important;
-}
+  .dropdown-item--active {
+    background: var(--pol-blue-light);
+    color: var(--pol-blue);
+    font-weight: 700;
+  }
+
+  .dropdown-item--disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .topbar {
+      padding: 10px;
+    }
+
+    .menu-row {
+      gap: 8px;
+    }
+
+    .topbar-item {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .menu-group {
+      width: 100%;
+    }
+
+    .menu-group::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 100%;
+      width: 100%;
+      height: 10px;
+      background: transparent;
+    }
+    .dropdown {
+      position: static;
+      margin-top: 8px;
+      width: 100%;
+    }
+  }
 </style>

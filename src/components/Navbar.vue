@@ -66,8 +66,8 @@
   import SvgIcon from "@/components/SvgIcon.vue";
   import { useRouter } from "vue-router";
   
-  const SLIM = 80;
-  const EXPANDED = 260;
+  const SLIM = 90;
+  const EXPANDED = 270;
 
   const isHovered = ref(false);
   const hasFocusInside = ref(false);
@@ -99,7 +99,7 @@
 <style scoped>
 
   .drawer {
-    --drawer-SLIM-width: 56px;
+    --drawer-SLIM-width: 75px;
     --drawer-expanded-width: 256px;
 
     position: fixed;

@@ -52,7 +52,6 @@ const inputmode = computed(() => {
 function onInput(e) {
   const raw = e.target.value
   if (props.type === 'number') {
-    // Mantén string si está vacío, si no Number
     emit('update:modelValue', raw === '' ? '' : Number(raw))
     return
   }

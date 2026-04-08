@@ -1,7 +1,5 @@
 <template>
     <div>
-        <span> HEADssssssssssssssssssssssssssssssER </span> 
-        <v-toolbar-title> {{ viewDesc }} </v-toolbar-title>
         <span> {{ nombre }}</span>
     </div>
 </template>
@@ -35,5 +33,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+    div {
+        margin-bottom: 20px;
+    }
 </style>

@@ -1,30 +1,56 @@
 <template>
-  <TopMenus :menus="menus" />
-  <router-view />
+  <section class="vehiculos-module">
+    <TopMenus :menus="menus" />
+    <router-view />
+  </section>
 </template>
 
 <script setup>
   import TopMenus from "@/components/TopMenus.vue";
 
-const menus = [
-  {
-    label: "FLOTILLA",
-    icon: "mdi-car-multiple",
-    items: [{ title: "Consultar Flotilla", routeName: "FlotillaConsultarFlotilla", disabled: false }],
-  },
-  {
-    label: "VEHÍCULOS",
-    icon: "mdi-car",
-    items: [
-      { title: "Consultar Vehículo", routeName: "VehiculoConsultarVehiculo", disabled: false },
-      { divider: true },
-      { title: "Registrar Carga", routeName: "VehiculoRegistrarCarga", disabled: false },
-    ],
-  },
-  {
-    label: "CONSULTAS",
-    icon: "mdi-help-circle-outline",
-    items: [{ title: "Rendimiento de Vehículo", routeName: "ReporteRendimientoVehiculo", disabled: false }],
-  },
-];
+  const menus = [
+    {
+      label: "Flotilla",
+      items: [
+        {
+          title: "Consultar Flotilla",
+          routeName: "FlotillaConsultarFlotilla",
+          disabled: false,
+        },
+      ],
+    },
+    {
+      label: "Vehículos",
+      items: [
+        {
+          title: "Consultar Vehículo",
+          routeName: "VehiculoConsultarVehiculo",
+          disabled: false,
+        },
+        { divider: true },
+        {
+          title: "Registrar Carga",
+          routeName: "VehiculoRegistrarCarga",
+          disabled: false,
+        },
+      ],
+    },
+    {
+      label: "Consultas",
+      items: [
+        {
+          title: "Rendimiento de Vehículo",
+          routeName: "ReporteRendimientoVehiculo",
+          disabled: false,
+        },
+      ],
+    },
+  ];
 </script>
+
+<style scoped>
+  .vehiculos-module {
+    display: grid;
+    gap: 0;
+  }
+</style>
