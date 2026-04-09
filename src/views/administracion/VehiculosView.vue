@@ -1,38 +1,46 @@
 <template>
-  <section class="page">
-    <div class="page-card">
-      <h2 class="page-title">Vehículos</h2>
-      <p class="page-text">Vista en construcción.</p>
+  <section class="vehiculos-admin-module">
+    <TopMenus :menus="menus" />
+
+    <div v-if="!hasChild" class="placeholder">
+      <h2>Catálogos Vehicular</h2>
+      <p>Selecciona una opción del menú para comenzar.</p>
     </div>
+
+    <router-view v-else />
   </section>
 </template>
 
 <script setup>
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import TopMenus from "@/components/TopMenus.vue";
+
+const route = useRoute();
+
+const hasChild = computed(() => route.name !== "AdministracionVehiculos");
+
+const menus = [
+  {
+    label: "CATÁLOGOS VEHICULAR",
+    items: [
+      { title: "Marcas", routeName: "AdministracionVehiculosMarcas" },
+      { title: "Submarcas", routeName: "AdministracionVehiculosSubmarcas" },
+      { title: "Combustibles", routeName: "AdministracionVehiculosCombustibles" },
+      { divider: true },
+      { title: "Vehículos", routeName: "AdministracionVehiculosCatalogo" },
+    ],
+  },
+];
 </script>
 
 <style scoped>
-  .page {
-    padding: 0;
-  }
+.vehiculos-admin-module {
+  display: grid;
+  gap: 0;
+}
 
-  .page-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
-  }
-
-  .page-title {
-    margin: 0 0 8px;
-    color: var(--pol-blue);
-    font-size: 24px;
-    font-weight: 800;
-  }
-
-  .page-text {
-    margin: 0;
-    color: var(--muted);
-    font-size: 15px;
-  }
+.placeholder {
+  padding: 18px;
+}
 </style>

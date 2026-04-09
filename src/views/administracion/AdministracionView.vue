@@ -1,6 +1,6 @@
 <template>
-  <TopMenus :menus="menus" />
-
+  <TopMenus v-if="!isVehiculosModule" :menus="menus" />
+  
   <div v-if="!hasChild" class="placeholder">
     <h2>Administración</h2>
     <p>Selecciona una opción del menú para comenzar.</p>
@@ -8,7 +8,6 @@
 
   <router-view v-else />
 </template>
-
 
 <script setup>
 import { computed } from "vue";
@@ -35,6 +34,11 @@ const menus = [
     ],
   },
 ];
+
+const isVehiculosModule = computed(() =>
+  route.path.startsWith("/administracion/vehiculos")
+);
+
 </script>
 
 <style scoped>

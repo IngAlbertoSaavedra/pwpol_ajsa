@@ -4,25 +4,26 @@ import authService from "@/services/auth.service.js";
 const routes = [
   {
     path: "/",
-    redirect: () => (authService.isAuthenticatedRef.value ? "/default" : "/login"),
+    redirect: () =>
+      authService.isAuthenticatedRef.value ? "/default" : "/login",
   },
-  { 
-    path: "/login", 
-    name: "Login", 
+  {
+    path: "/login",
+    name: "Login",
     component: () => import("@/views/LoginView.vue"),
     meta: {
-      FREE: true
-    }
+      FREE: true,
+    },
   },
 
- { 
-    path: "/default", 
-    name: "Inicio", 
-    component: () => import("@/views/DefaultView.vue"), 
-    meta: { 
-      requiresAuth: true, 
-      viewDesc: "Página de Inicio"
-    } 
+  {
+    path: "/default",
+    name: "Inicio",
+    component: () => import("@/views/DefaultView.vue"),
+    meta: {
+      requiresAuth: true,
+      viewDesc: "Página de Inicio",
+    },
   },
 
   {
@@ -34,9 +35,8 @@ const routes = [
         path: "",
         name: "VehiculosIndex",
         redirect: { name: "VehiculoConsultarVehiculo" },
-         meta: { requiresAuth: true, viewDesc: "Vehículos" }
+        meta: { requiresAuth: true, viewDesc: "Vehículos" },
       },
-
       {
         path: "registrar-carga",
         name: "VehiculoRegistrarCarga",
@@ -49,23 +49,19 @@ const routes = [
         component: () => import("@/views/vehiculos/ConsultarVehiculoView.vue"),
         meta: { requiresAuth: true, viewDesc: "Consultar Vehículo" },
       },
-
-      // Flotilla
       {
         path: "consultar-flotilla",
         name: "FlotillaConsultarFlotilla",
         component: () => import("@/views/vehiculos/ConsultarFlotillaView.vue"),
         meta: { requiresAuth: true, viewDesc: "Consultar Flotilla" },
       },
-
-      // Reportes
       {
         path: "reporte-rendimiento-vehiculo",
         name: "ReporteRendimientoVehiculo",
-        component: () => import("@/views/vehiculos/RendimientoVehiculoView.vue"),
+        component: () =>
+          import("@/views/vehiculos/RendimientoVehiculoView.vue"),
         meta: { requiresAuth: true, viewDesc: "Reporte Rendimiento Vehículo" },
       },
-
     ],
   },
 
@@ -99,19 +95,54 @@ const routes = [
         component: () => import("@/views/administracion/EmpresasView.vue"),
         meta: { requiresAuth: true, viewDesc: "Empleados" },
       },
-
       {
         path: "empleados",
         name: "AdministracionEmpleados",
         component: () => import("@/views/administracion/EmpleadosView.vue"),
         meta: { requiresAuth: true, viewDesc: "Empleados" },
       },
-            {
+
+      {
         path: "vehiculos",
         name: "AdministracionVehiculos",
         component: () => import("@/views/administracion/VehiculosView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Vehículos" },
+        meta: { requiresAuth: true, viewDesc: "Catálogos Vehicular" },
+        children: [
+          {
+            path: "",
+            redirect: { name: "AdministracionVehiculosMarcas" },
+          },
+          {
+            path: "marcas",
+            name: "AdministracionVehiculosMarcas",
+            component: () =>
+              import("@/views/administracion/vehiculos/MarcasView.vue"),
+            meta: { requiresAuth: true, viewDesc: "Marcas" },
+          },
+          {
+            path: "submarcas",
+            name: "AdministracionVehiculosSubmarcas",
+            component: () =>
+              import("@/views/administracion/vehiculos/SubmarcasView.vue"),
+            meta: { requiresAuth: true, viewDesc: "Submarcas" },
+          },
+          {
+            path: "combustibles",
+            name: "AdministracionVehiculosCombustibles",
+            component: () =>
+              import("@/views/administracion/vehiculos/CombustiblesView.vue"),
+            meta: { requiresAuth: true, viewDesc: "Combustibles" },
+          },
+          {
+            path: "catalogo",
+            name: "AdministracionVehiculosCatalogo",
+            component: () =>
+              import("@/views/administracion/vehiculos/VehiculosCatalogoView.vue"),
+            meta: { requiresAuth: true, viewDesc: "Vehículos" },
+          },
+        ],
       },
+
       {
         path: "usuarios",
         name: "AdministracionUsuarios",
@@ -127,17 +158,14 @@ const routes = [
     ],
   },
 
-
-  { 
-    path: "/no-autorizado", 
-    name: "NoAutorizado", 
-    component: () => import("@/views/NoAuthorized/NoAuthorizedView.vue"), 
-    meta: {   
-      FREE: true
-    } 
+  {
+    path: "/no-autorizado",
+    name: "NoAutorizado",
+    component: () => import("@/views/NoAuthorized/NoAuthorizedView.vue"),
+    meta: {
+      FREE: true,
+    },
   },
-
-  
 ];
 
 const router = createRouter({
@@ -161,12 +189,15 @@ router.beforeEach((to) => {
     return { path: "/login", query: { redirect: to.fullPath } };
   }
 
-  if (allowedperfils && allowedperfils.length > 0 && !allowedperfils.includes(perfil)) {
+  if (
+    allowedperfils &&
+    allowedperfils.length > 0 &&
+    !allowedperfils.includes(perfil)
+  ) {
     return { path: "/default" };
   }
 
   return true;
 });
-
 
 export default router;
