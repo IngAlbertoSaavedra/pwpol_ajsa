@@ -62,7 +62,10 @@ export async function createMarca(req, res) {
     res.json({ ok: true, id: result.recordset?.[0]?.id });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ ok: false, msg: err?.message || "Error insertando marca" });
+    res.status(500).json({
+      ok: false,
+      msg: err?.message || "Error insertando marca",
+    });
   }
 }
 
@@ -78,10 +81,17 @@ export async function updateMarca(req, res) {
       { name: "activa", type: sql.Bit, value: m.activa ?? true },
     ]);
 
-    res.json({ ok: true, id: result.recordset?.[0]?.id ?? id });
+    res.json({
+      ok: true,
+      id: result.recordset?.[0]?.id ?? id,
+      activa: m.activa ?? true,
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ ok: false, msg: err?.message || "Error actualizando marca" });
+    res.status(500).json({
+      ok: false,
+      msg: err?.message || "Error actualizando marca",
+    });
   }
 }
 
@@ -99,10 +109,13 @@ export async function setActivoMarca(req, res) {
     res.json({
       ok: true,
       id: result.recordset?.[0]?.id ?? id,
-      activo: result.recordset?.[0]?.activo ?? activa,
+      activa: result.recordset?.[0]?.activa ?? activa,
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ ok: false, msg: err?.message || "Error actualizando estatus de marca" });
+    res.status(500).json({
+      ok: false,
+      msg: err?.message || "Error actualizando estatus de marca",
+    });
   }
 }

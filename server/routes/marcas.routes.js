@@ -1,5 +1,12 @@
 import { Router } from "express";
-import { listMarcas, listMarcasCombo, getMarca, createMarca, updateMarca, setActivoMarca } from "../controllers/marcas.controller.js";
+import {
+  listMarcas,
+  listMarcasCombo,
+  getMarca,
+  createMarca,
+  updateMarca,
+  setActivoMarca,
+} from "../controllers/marcas.controller.js";
 
 const router = Router();
 

@@ -3,7 +3,7 @@
     <BaseToast />
 
     <div class="toolbar">
-      <h2 class="title">Combustibles</h2>
+      <h2 class="title">Modelos</h2>
       <div class="spacer"></div>
 
       <BaseInput
@@ -35,7 +35,6 @@
             <span v-if="col.key === 'activo'">
               {{ normalizeActivo(row.activo) ? "SI" : "NO" }}
             </span>
-
             <span v-else>
               {{ row[col.key] }}
             </span>
@@ -57,15 +56,26 @@
 
     <BaseModal
       v-model:open="dialog"
-      :title="form.id ? 'Editar Combustible' : 'Agregar Combustible'"
+      :title="form.id ? 'Editar Modelo' : 'Agregar Modelo'"
     >
       <form class="form-grid" @submit.prevent="save">
-        <BaseInput
-          v-model="form.nombre"
-          label="Nombre"
+        <BaseSelect
+          v-model="form.id_marca"
+          label="Marca"
+          :options="marcaOptions"
           :required="true"
-          :error="errors.nombre"
-          placeholder="Ej. GASOLINA MAGNA"
+          :error="errors.id_marca"
+          placeholder="Selecciona una marca"
+        />
+
+        <BaseSelect
+          v-model="form.id_submarca"
+          label="Submarca"
+          :options="submarcaOptions"
+          :required="true"
+          :error="errors.id_submarca"
+          placeholder="Selecciona una submarca"
+          :disabled="!form.id_marca"
         />
 
         <label class="check col-span-2">
@@ -93,11 +103,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 
 import BaseToast from "@/components/ui/BaseToast.vue";
 import BaseButton from "@/components/ui/BaseButton.vue";
 import BaseInput from "@/components/ui/BaseInput.vue";
+import BaseSelect from "@/components/ui/BaseSelect.vue";
 import BaseModal from "@/components/ui/BaseModal.vue";
 import DataTable from "@/components/ui/DataTable.vue";
 import { useToast } from "@/composables/useToast";
@@ -105,6 +116,8 @@ import { useToast } from "@/composables/useToast";
 const { show } = useToast();
 
 const rows = ref([]);
+const marcas = ref([]);
+const submarcas = ref([]);
 const search = ref("");
 const dialog = ref(false);
 const saving = ref(false);
@@ -115,35 +128,66 @@ const errors = reactive(emptyErrors());
 function emptyForm() {
   return {
     id: null,
-    nombre: "",
+    id_marca: "",
+    id_submarca: "",
     activo: true,
   };
 }
 
 function emptyErrors() {
   return {
-    nombre: "",
+    id_marca: "",
+    id_submarca: "",
   };
 }
 
 const columns = [
-  { key: "nombre", label: "Nombre", sortable: true },
+  { key: "marca", label: "Marca", sortable: true },
+  { key: "submarca", label: "Submarca", sortable: true },
   { key: "activo", label: "Activo", sortable: true },
 ];
+
+const marcaOptions = computed(() => {
+  return (marcas.value || []).map((m) => ({
+    label: m.marca,
+    value: String(m.id),
+  }));
+});
+
+const submarcaOptions = computed(() => {
+  return (submarcas.value || []).map((s) => ({
+    label: s.submarca,
+    value: String(s.id),
+  }));
+});
 
 const filtered = computed(() => {
   const s = search.value.trim().toUpperCase();
   if (!s) return rows.value;
 
   return rows.value.filter((r) =>
-    [
-      r.nombre,
-      normalizeActivo(r.activo) ? "SI" : "NO",
-    ]
+    [r.marca, r.submarca, normalizeActivo(r.activo) ? "SI" : "NO"]
       .filter((e) => e !== null && e !== undefined)
       .some((e) => String(e).toUpperCase().includes(s))
   );
 });
+
+watch(
+  () => form.id_marca,
+  async (newValue, oldValue) => {
+    if (!newValue) {
+      submarcas.value = [];
+      form.id_submarca = "";
+      return;
+    }
+
+    if (newValue !== oldValue) {
+      form.id_submarca = "";
+    }
+
+    await loadSubmarcasCombo(newValue);
+  }
+);
 
 function normalizeActivo(value) {
   return (
@@ -190,32 +234,61 @@ async function apiSend(url, method, body) {
   }
 }
 
-async function loadCombustibles() {
-  const r = await apiGet("/api/combustibles");
+async function loadModelos() {
+  const r = await apiGet("/api/modelos");
 
   if (r.ok) {
     rows.value = Array.isArray(r.data) ? r.data : [];
   } else {
-    show(r.msg || "No se pudieron cargar los combustibles.", "danger");
+    show(r.msg || "No se pudieron cargar los modelos.", "danger");
+  }
+}
+
+async function loadMarcas() {
+  const r = await apiGet("/api/marcas/combo");
+
+  if (r.ok) {
+    marcas.value = Array.isArray(r.data) ? r.data : [];
+  } else {
+    show(r.msg || "No se pudieron cargar las marcas.", "danger");
+  }
+}
+
+async function loadSubmarcasCombo(idMarca) {
+  const r = await apiGet(`/api/submarcas/combo?id_marca=${idMarca}`);
+
+  if (r.ok) {
+    submarcas.value = Array.isArray(r.data) ? r.data : [];
+  } else {
+    submarcas.value = [];
+    show(r.msg || "No se pudieron cargar las submarcas.", "danger");
   }
 }
 
 function openCreate() {
   Object.assign(form, emptyForm());
   Object.assign(errors, emptyErrors());
+  submarcas.value = [];
   dialog.value = true;
 }
 
-function openEdit(item) {
+async function openEdit(item) {
   Object.assign(errors, emptyErrors());
 
   Object.assign(form, {
     id: item.id,
-    nombre: item.nombre ?? "",
+    id_marca: String(item.id_marca ?? ""),
+    id_submarca: "",
     activo: normalizeActivo(item.activo),
   });
 
   dialog.value = true;
+
+  if (form.id_marca) {
+    await loadSubmarcasCombo(form.id_marca);
+  }
+
+  form.id_submarca = String(item.id_submarca ?? "");
 }
 
 function closeDialog() {
@@ -225,12 +298,12 @@ function closeDialog() {
 function validate() {
   Object.assign(errors, emptyErrors());
 
-  const nombre = String(form.nombre || "").trim();
+  if (!String(form.id_marca || "").trim()) {
+    errors.id_marca = "La marca es requerida";
+  }
 
-  if (!nombre) {
-    errors.nombre = "El nombre es requerido";
-  } else if (nombre.length > 50) {
-    errors.nombre = "Máximo 50 caracteres";
+  if (!String(form.id_submarca || "").trim()) {
+    errors.id_submarca = "La submarca es requerida";
   }
 
   return !Object.values(errors).some(Boolean);
@@ -249,45 +322,46 @@ async function save() {
   try {
     const payload = {
       id: form.id,
-      nombre: String(form.nombre).trim().toUpperCase(),
+      id_marca: Number(form.id_marca),
+      id_submarca: Number(form.id_submarca),
       activo: !!form.activo,
     };
 
     let r;
 
     if (!payload.id) {
-      r = await apiSend("/api/combustibles", "POST", payload);
+      r = await apiSend("/api/modelos", "POST", payload);
 
       if (r.ok) {
-        show("Combustible agregado", "success");
+        show("Modelo agregado", "success");
         dialog.value = false;
-        await loadCombustibles();
+        await loadModelos();
       } else {
-        show(r.msg || "Error insertando combustible, marque a Sistemas", "danger");
-        console.error("Error POST /api/combustibles:", r);
+        show(r.msg || "Error insertando modelo, marque a Sistemas", "danger");
+        console.error("Error POST /api/modelos:", r);
       }
     } else {
-      r = await apiSend(`/api/combustibles/${payload.id}`, "PUT", payload);
+      r = await apiSend(`/api/modelos/${payload.id}`, "PUT", payload);
 
       if (r.ok) {
-        show("Combustible actualizado", "success");
+        show("Modelo actualizado", "success");
         dialog.value = false;
-        await loadCombustibles();
+        await loadModelos();
       } else {
-        show(r.msg || "No se pudo actualizar el combustible", "warning");
-        console.error(`Error PUT /api/combustibles/${payload.id}:`, r);
+        show(r.msg || "No se pudo actualizar el modelo", "warning");
+        console.error(`Error PUT /api/modelos/${payload.id}:`, r);
       }
     }
   } catch (error) {
-    console.error("Error al guardar combustible:", error);
-    show("Ocurrió un error al guardar el combustible", "danger");
+    console.error("Error al guardar modelo:", error);
+    show("Ocurrió un error al guardar el modelo", "danger");
   } finally {
     saving.value = false;
   }
 }
 
 onMounted(async () => {
-  await loadCombustibles();
+  await Promise.all([loadModelos(), loadMarcas()]);
 });
 </script>
 

@@ -26,9 +26,16 @@ const menus = [
     items: [
       { title: "Marcas", routeName: "AdministracionVehiculosMarcas" },
       { title: "Submarcas", routeName: "AdministracionVehiculosSubmarcas" },
+      { title: "Modelos", routeName: "AdministracionVehiculosModelos" },
       { title: "Combustibles", routeName: "AdministracionVehiculosCombustibles" },
       { divider: true },
       { title: "Vehículos", routeName: "AdministracionVehiculosCatalogo" },
+    ],
+  },
+  {
+    label: "ASIGNACIONES",
+    items: [
+      { title: "Chofer", routeName: "AdministracionVehiculosAsignarChofer" },
     ],
   },
 ];

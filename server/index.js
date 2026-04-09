@@ -12,6 +12,13 @@ import puestosRoutes from "./routes/puestos.routes.js";
 import empleadosRoutes from "./routes/empleados.routes.js";
 import usuariosRoutes from "./routes/usuarios.routes.js";
 import marcasRoutes from "./routes/marcas.routes.js";
+import submarcasRoutes from "./routes/submarcas.routes.js";
+import combustiblesRoutes from "./routes/combustibles.routes.js";
+import modelosRoutes from "./routes/modelos.routes.js";
+import vehiculosRoutes from "./routes/vehiculos.routes.js";
+import asignacionChoferRoutes from "./routes/asignacionchofer.routes.js";
+import perfilesRoutes from "./routes/perfiles.routes.js";
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -28,7 +35,12 @@ app.use("/api/puestos", puestosRoutes);
 app.use("/api/empleados", empleadosRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/marcas", marcasRoutes);
-
+app.use("/api/submarcas", submarcasRoutes);
+app.use("/api/combustibles", combustiblesRoutes);
+app.use("/api/modelos", modelosRoutes);
+app.use("/api/vehiculos", vehiculosRoutes);
+app.use("/api/asignacionchofer", asignacionChoferRoutes);
+app.use("/api/perfiles", perfilesRoutes);
 
 app.post("/api/login", async (req, res) => {
   const usuario = String(req.body?.usuario || "").trim();

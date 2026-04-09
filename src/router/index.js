@@ -127,6 +127,13 @@ const routes = [
             meta: { requiresAuth: true, viewDesc: "Submarcas" },
           },
           {
+            path: "modelos",
+            name: "AdministracionVehiculosModelos",
+            component: () =>
+              import("@/views/administracion/vehiculos/ModelosView.vue"),
+            meta: { requiresAuth: true, viewDesc: "Modelos" },
+          },
+          {
             path: "combustibles",
             name: "AdministracionVehiculosCombustibles",
             component: () =>
@@ -139,6 +146,13 @@ const routes = [
             component: () =>
               import("@/views/administracion/vehiculos/VehiculosCatalogoView.vue"),
             meta: { requiresAuth: true, viewDesc: "Vehículos" },
+          },
+          {
+            path: "asignar-chofer",
+            name: "AdministracionVehiculosAsignarChofer",
+            component: () =>
+              import("@/views/administracion/vehiculos/AsignarChoferView.vue"),
+            meta: { requiresAuth: true, viewDesc: "Asignación de Chofer" },
           },
         ],
       },
