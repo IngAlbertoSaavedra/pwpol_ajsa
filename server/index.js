@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import sql from "mssql";
+import dotenv from 'dotenv';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { getPool } from "./db/db.js";
@@ -19,9 +20,10 @@ import vehiculosRoutes from "./routes/vehiculos.routes.js";
 import asignacionChoferRoutes from "./routes/asignacionchofer.routes.js";
 import perfilesRoutes from "./routes/perfiles.routes.js";
 
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 const HOST = "0.0.0.0";
 
 
