@@ -8,11 +8,7 @@
     />
 
     <main class="content">
-      <Header 
-        v-if="isLoggedIn"
-        @nav-offset="navOffset = $event"
-      />
-
+      <Header v-if="isLoggedIn" />
       <router-view />
     </main>
   </div>
@@ -31,12 +27,15 @@
   const navOffset = ref(80);
 
   const route = useRoute();
-  
+
   const viewDesc = computed(() => {
     const direct = route.meta?.viewDesc;
     if (direct) return direct;
 
-    const fromMatched = [...route.matched].reverse().find(r => r.meta?.viewDesc)?.meta?.viewDesc;
+    const fromMatched = [...route.matched]
+      .reverse()
+      .find((r) => r.meta?.viewDesc)?.meta?.viewDesc;
+
     return fromMatched || "";
   });
 
@@ -47,8 +46,8 @@
   .layout {
     min-height: 100vh;
     position: relative;
+    background: transparent;
   }
-
 
   .content {
     padding-left: var(--nav-offset);
@@ -56,5 +55,6 @@
     padding-right: 16px;
     padding-bottom: 16px;
     box-sizing: border-box;
+    color: var(--text);
   }
 </style>

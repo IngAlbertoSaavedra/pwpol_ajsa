@@ -23,6 +23,7 @@ const routes = [
     meta: {
       requiresAuth: true,
       viewDesc: "Página de Inicio",
+      breadcrumb: "Inicio",
     },
   },
 
@@ -35,32 +36,48 @@ const routes = [
         path: "",
         name: "VehiculosIndex",
         redirect: { name: "VehiculoConsultarVehiculo" },
-        meta: { requiresAuth: true, viewDesc: "Vehículos" },
+        meta: { 
+          requiresAuth: true, 
+          breadcrumb: "Vehículos",
+          viewDesc: "Administración de Vehículos", 
+        },
       },
       {
         path: "registrar-carga",
         name: "VehiculoRegistrarCarga",
         component: () => import("@/views/vehiculos/RegistrarCargaView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Registrar Carga de Vehículo" },
+        meta: { 
+          requiresAuth: true, 
+          breadcrumb: "Registrar Carga",
+          viewDesc: "Registrar Carga de Vehículo" },
       },
       {
         path: "consultar-vehiculo",
         name: "VehiculoConsultarVehiculo",
         component: () => import("@/views/vehiculos/ConsultarVehiculoView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Consultar Vehículo" },
+        meta: { 
+          requiresAuth: true, 
+          breadcrumb: "Consultar Vehículo",
+          viewDesc: "Consultar Vehículo" },
       },
       {
         path: "consultar-flotilla",
         name: "FlotillaConsultarFlotilla",
         component: () => import("@/views/vehiculos/ConsultarFlotillaView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Consultar Flotilla" },
+        meta: { 
+          requiresAuth: true, 
+          breadcrumb: "Consultar Flotilla",
+          viewDesc: "Consultar Flotilla" },
       },
       {
         path: "reporte-rendimiento-vehiculo",
         name: "ReporteRendimientoVehiculo",
         component: () =>
           import("@/views/vehiculos/RendimientoVehiculoView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Reporte Rendimiento Vehículo" },
+        meta: { 
+          requiresAuth: true, 
+          breadcrumb: "Reporte Rendimiento Vehículo",
+          viewDesc: "Reporte Rendimiento Vehículo" },
       },
     ],
   },
@@ -69,44 +86,69 @@ const routes = [
     path: "/administracion",
     name: "Administracion",
     component: () => import("@/views/administracion/AdministracionView.vue"),
-    meta: { requiresAuth: true, viewDesc: "Administración" },
+    meta: { 
+        requiresAuth: true, 
+        breadcrumb: "Administración",
+        viewDesc: "Administración" },
     children: [
       {
         path: "sucursales",
         name: "AdministracionSucursales",
         component: () => import("@/views/administracion/SucursalesView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Sucursales" },
+        meta: { 
+          requiresAuth: true, 
+          viewDesc: "Sucursales",
+          breadcrumb: "Sucursales"
+        },
       },
       {
         path: "departamentos",
         name: "AdministracionDepartamentos",
         component: () => import("@/views/administracion/DepartamentosView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Departamentos" },
+        meta: { 
+          requiresAuth: true, 
+          viewDesc: "Departamentos",
+          breadcrumb: "Departamentos"
+         },
       },
       {
         path: "puestos",
         name: "AdministracionPuestos",
         component: () => import("@/views/administracion/PuestosView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Puestos" },
+        meta: { 
+          requiresAuth: true,
+          viewDesc: "Puestos",
+          breadcrumb: "Puestos"
+         },
       },
       {
         path: "empresas",
         name: "AdministracionEmpresas",
         component: () => import("@/views/administracion/EmpresasView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Empleados" },
+        meta: { 
+          requiresAuth: true, 
+          viewDesc: "Empleados", 
+          breadcrumb: "Empleados" },
       },
       {
         path: "empleados",
         name: "AdministracionEmpleados",
         component: () => import("@/views/administracion/EmpleadosView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Empleados" },
+        meta: { 
+          requiresAuth: true, 
+          viewDesc: "Empleados",
+          breadcrumb: "Empleados"
+        },
       },
 
       {
         path: "vehiculos",
         name: "AdministracionVehiculos",
         component: () => import("@/views/administracion/VehiculosView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Catálogos Vehicular" },
+        meta: { 
+          requiresAuth: true, 
+          viewDesc: "Catálogos Vehicular",
+          breadcrumb: "Catálogos Vehicular"},
         children: [
           {
             path: "",
@@ -117,42 +159,65 @@ const routes = [
             name: "AdministracionVehiculosMarcas",
             component: () =>
               import("@/views/administracion/vehiculos/MarcasView.vue"),
-            meta: { requiresAuth: true, viewDesc: "Marcas" },
+            meta: { 
+              requiresAuth: true, 
+              viewDesc: "Marcas", 
+              breadcrumb: "Marcas" 
+            },
           },
           {
             path: "submarcas",
             name: "AdministracionVehiculosSubmarcas",
             component: () =>
               import("@/views/administracion/vehiculos/SubmarcasView.vue"),
-            meta: { requiresAuth: true, viewDesc: "Submarcas" },
+            meta: { 
+              requiresAuth: true, 
+              viewDesc: "Submarcas",
+              breadcrumb: "Submarcas"
+            },
           },
           {
             path: "modelos",
             name: "AdministracionVehiculosModelos",
             component: () =>
               import("@/views/administracion/vehiculos/ModelosView.vue"),
-            meta: { requiresAuth: true, viewDesc: "Modelos" },
+            meta: { 
+              requiresAuth: true, 
+              viewDesc: "Modelos",
+              breadcrumb: "Modelos"
+             },
           },
           {
             path: "combustibles",
             name: "AdministracionVehiculosCombustibles",
             component: () =>
               import("@/views/administracion/vehiculos/CombustiblesView.vue"),
-            meta: { requiresAuth: true, viewDesc: "Combustibles" },
+            meta: { 
+              requiresAuth: true, 
+              viewDesc: "Combustibles", 
+              breadcrumb: "Combustibles" },
           },
           {
             path: "catalogo",
             name: "AdministracionVehiculosCatalogo",
             component: () =>
               import("@/views/administracion/vehiculos/VehiculosCatalogoView.vue"),
-            meta: { requiresAuth: true, viewDesc: "Vehículos" },
+            meta: { 
+              requiresAuth: true, 
+              viewDesc: "Vehículos",
+              breadcrumb: "Vehículos"
+             },
           },
           {
             path: "asignar-chofer",
             name: "AdministracionVehiculosAsignarChofer",
             component: () =>
               import("@/views/administracion/vehiculos/AsignarChoferView.vue"),
-            meta: { requiresAuth: true, viewDesc: "Asignación de Chofer" },
+            meta: { 
+              requiresAuth: true, 
+              viewDesc: "Asignación de Chofer",
+              breadcrumb: "Asignación de Chofer"
+             },
           },
         ],
       },
@@ -161,13 +226,21 @@ const routes = [
         path: "usuarios",
         name: "AdministracionUsuarios",
         component: () => import("@/views/administracion/UsuariosView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Usuarios" },
+        meta: { 
+          requiresAuth: true, 
+          viewDesc: "Usuarios",
+          breadcrumb: "Usuarios"
+        },
       },
       {
         path: "perfiles",
         name: "AdministracionPerfiles",
         component: () => import("@/views/administracion/PerfilesView.vue"),
-        meta: { requiresAuth: true, viewDesc: "Perfiles" },
+        meta: { 
+          requiresAuth: true, 
+          viewDesc: "Perfiles",
+          breadcrumb: "Perfiles"
+        },
       },
     ],
   },

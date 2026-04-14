@@ -1,6 +1,9 @@
-
 import { Router } from "express";
-import { listEmpleados, createEmpleado, updateEmpleado } from "../controllers/empleados.controller.js";
+import {
+  listEmpleados,
+  createEmpleado,
+  updateEmpleado,
+} from "../controllers/empleados.controller.js";
 
 const router = Router();
 

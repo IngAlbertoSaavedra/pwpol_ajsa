@@ -26,18 +26,70 @@
 
 <script setup>
 defineProps({
-  modelValue: { type: [String, Number], default: '' },
-  label: { type: String, default: '' },
+  modelValue: { type: [String, Number], default: "" },
+  label: { type: String, default: "" },
   required: { type: Boolean, default: false },
-  error: { type: String, default: '' },
+  error: { type: String, default: "" },
   disabled: { type: Boolean, default: false },
-  id: { type: String, default: '' },
-  placeholder: { type: String, default: 'Selecciona una opción' },
+  id: { type: String, default: "" },
+  placeholder: { type: String, default: "Selecciona una opción" },
   options: {
     type: Array,
-    default: () => [], // [{ value, label }]
+    default: () => [],
   },
-})
+});
 
-const emit = defineEmits(['update:modelValue', 'blur'])
+const emit = defineEmits(["update:modelValue", "blur"]);
 </script>
+
+<style scoped>
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .req {
+    color: var(--danger);
+    margin-left: 4px;
+  }
+
+  .select {
+    min-height: 42px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: 0.2s ease;
+  }
+
+  .select:focus {
+    border-color: var(--brand-blue);
+    box-shadow: 0 0 0 3px var(--pol-blue-light);
+  }
+
+  .select:disabled {
+    background: var(--bg);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .has-error {
+    border-color: var(--danger);
+  }
+
+  .error {
+    margin: 0;
+    font-size: 12px;
+    color: var(--alert-font);
+    font-weight: 600;
+  }
+</style>

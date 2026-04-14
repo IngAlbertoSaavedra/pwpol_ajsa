@@ -11,10 +11,14 @@
     align-items: center;
     flex-direction: column;
     height: 100vh;
+    background: var(--bg);
   }
 
   .logo {
     animation: pulse 1.2s ease-in-out infinite alternate;
+    border-radius: 18px;
+    box-shadow: 0 14px 26px var(--shadow);
+    background: var(--surface);
   }
 
   @keyframes pulse {
@@ -25,5 +29,4 @@
       transform: scale(1.05);
     }
   }
-
 </style>

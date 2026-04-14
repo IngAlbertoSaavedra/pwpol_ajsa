@@ -135,9 +135,9 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 8px 5px;
+    padding: 8px 10px;
     margin-bottom: 10px;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 18px var(--shadow);
   }
 
   .menu-row {
@@ -201,7 +201,7 @@
     border-top: none;
     border-radius: 0 0 14px 14px;
     padding: 8px;
-    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 18px 34px var(--shadow);
     z-index: 50;
   }
 
@@ -253,23 +253,16 @@
       justify-content: space-between;
     }
 
-    .menu-group {
+    .menu-group,
+    .dropdown {
       width: 100%;
     }
 
-    .menu-group::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 100%;
-      width: 100%;
-      height: 10px;
-      background: transparent;
-    }
     .dropdown {
       position: static;
-      margin-top: 8px;
-      width: 100%;
+      margin-top: 6px;
+      border-top: 1px solid var(--border);
+      border-radius: 14px;
     }
   }
 </style>

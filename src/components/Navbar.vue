@@ -8,7 +8,6 @@
     @focusout="hasFocusInside = false"
     aria-label="Navegación principal"
   >
-    <!-- Header -->
     <div class="drawer__header">
       <img
         src="../assets/images/logo_small.png"
@@ -52,8 +51,7 @@
         <span class="nav-item__label">Administración</span>
       </router-link>
       
-      <button v-if="isLoggedIn" class="btn"
-        @click="logout">
+      <button v-if="isLoggedIn" class="btn" @click="logout">
         Salir
       </button>
     </nav>
@@ -75,10 +73,8 @@
   const isExpanded = computed(() => isPinned.value || isHovered.value || hasFocusInside.value);
 
   const isLoggedIn = computed(() => authService.isAuthenticatedRef.value);
-  const role = computed(() => authService.roleRef.value);
   const nombre = computed(() => authService.nombreRef.value);
-  const usuario = computed(() => authService.userRef.value);
-  const router = useRouter()
+  const router = useRouter();
   
   const emit = defineEmits(["nav-offset"]);
   const reservedWidth = computed(() => (isPinned.value ? EXPANDED : SLIM));
@@ -90,14 +86,12 @@
   );
   
   const logout = () => {
-    authService.logout()
-    router.push('/login')
-  }
-
+    authService.logout();
+    router.push("/login");
+  };
 </script>
 
 <style scoped>
-
   .drawer {
     --drawer-SLIM-width: 75px;
     --drawer-expanded-width: 256px;
@@ -109,11 +103,12 @@
 
     width: var(--drawer-SLIM-width);
     background: var(--pol-blue);
-    color: white;
-    z-index: 1000;
+    color: var(--white);
+    z-index: 300;
 
     overflow: hidden;
     transition: width 180ms ease;
+    box-shadow: 8px 0 18px var(--shadow);
   }
 
   .drawer.expanded {
@@ -126,7 +121,7 @@
     gap: 10px;
     height: 56px;
     padding: 0 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid var(--glass-18);
   }
 
   .drawer__logo {
@@ -139,13 +134,14 @@
     font-weight: 700;
     letter-spacing: 0.3px;
     white-space: nowrap;
+    color: var(--white);
   }
 
   .drawer__pin {
     margin-left: auto;
     background: transparent;
     border: none;
-    color: white;
+    color: var(--white);
     cursor: pointer;
     font-size: 16px;
     padding: 6px 8px;
@@ -154,7 +150,7 @@
 
   .drawer__pin:hover,
   .drawer__pin:focus-visible {
-    background: rgba(255, 255, 255, 0.16);
+    background: var(--glass-18);
     outline: none;
   }
 
@@ -162,38 +158,31 @@
     display: flex;
     flex-direction: column;
     padding: 10px 6px;
-    gap: 4px;
+    gap: 6px;
   }
 
   .nav-item {
     display: flex;
     align-items: center;
     gap: 12px;
-
     height: 44px;
     padding: 0 10px;
-    border-radius: 10px;
-
-    color: white;
+    border-radius: 12px;
+    color: var(--white);
     text-decoration: none;
     white-space: nowrap;
     background: transparent;
-  }
-
-  .nav-item--button {
-    border: none;
-    cursor: pointer;
-    text-align: left;
+    transition: background 0.2s ease;
   }
 
   .nav-item.router-link-active {
-    background: rgba(255, 255, 255, 0.18);
+    background: var(--glass-18);
     font-weight: 700;
   }
 
   .nav-item:hover,
   .nav-item:focus-visible {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--glass-18);
     outline: none;
   }
 
@@ -201,6 +190,7 @@
     width: 24px;
     display: inline-flex;
     justify-content: center;
+    color: var(--white);
   }
 
   .nav-item__label {
@@ -222,8 +212,12 @@
     color: var(--white);
     font-weight: 800;
     cursor: pointer;
+    transition: background 0.2s ease;
   }
 
+  .btn:hover {
+    background: var(--brand-green);
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .drawer,

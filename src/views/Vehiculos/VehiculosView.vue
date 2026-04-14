@@ -9,16 +9,16 @@
   import TopMenus from "@/components/TopMenus.vue";
 
   const menus = [
-    {
-      label: "Flotilla",
-      items: [
-        {
-          title: "Consultar Flotilla",
-          routeName: "FlotillaConsultarFlotilla",
-          disabled: false,
-        },
-      ],
-    },
+    // {
+    //   label: "Flotilla",
+    //   items: [
+    //     {
+    //       title: "Consultar Flotilla",
+    //       routeName: "FlotillaConsultarFlotilla",
+    //       disabled: false,
+    //     },
+    //   ],
+    // },
     {
       label: "Vehículos",
       items: [

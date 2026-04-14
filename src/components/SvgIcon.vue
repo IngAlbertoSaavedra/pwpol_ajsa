@@ -25,8 +25,9 @@ const path = computed(() => icons[props.name] || "");
 </script>
 
 <style scoped>
-.svg-icon {
-  display: inline-block;
-  vertical-align: middle;
-}
+  .svg-icon {
+    display: inline-block;
+    vertical-align: middle;
+    color: inherit;
+  }
 </style>
