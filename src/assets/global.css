@@ -1,30 +1,67 @@
 :root {
+  /* BASE */
   --white: #ffffff;
   --black: #000000;
 
+  /* BRAND */
   --brand-green: #04b500;
   --brand-blue: #0689b0;
   --pol-blue: #002455;
   --pol-blue-light: #BBE0EF;
+  --pol-yellow: #FFE766;
 
+  /* BACKGROUND / TEXT */
   --bg: #f6f8fb;
   --surface: #ffffff;
   --text: #0f172a;
   --muted: rgba(15, 23, 42, 0.65);
+
+  /* EFFECTS */
   --glass-18: rgba(255, 255, 255, 0.18);
   --row-alt: rgba(15, 23, 42, 0.04);
-  --shadow: rgba(0,0,0,0.14);
+  --shadow: rgba(0, 0, 0, 0.14);
 
+  /* STATES */
   --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #22c55e;
+
+  /* ALERT (legacy que ya tenías) */
   --alert-bg: rgba(218, 5, 5, 0.25);
   --alert-font: #DC0000;
   --red: #8A244B;
 
-  --warning: #f59e0b;
-  --pol-yellow: #FFE766;
-  --success: #22c55e;
-
+  /* BORDER */
   --border: rgba(15, 23, 42, 0.12);
+
+  /* ========================= */
+  /* UI - CONSULTA VEHICULO */
+  /* ========================= */
+
+  /* INPUT */
+  --input-border: #cbd5e1;
+  --input-placeholder: #9ca3af;
+  --input-focus: #2563eb;
+  --input-focus-shadow: rgba(37, 99, 235, 0.12);
+
+  /* BUTTONS */
+  --btn-primary-bg: #2563eb;
+  --btn-primary-text: #ffffff;
+
+  --btn-secondary-bg: #e5e7eb;
+  --btn-secondary-text: #111827;
+
+  /* ALERTS */
+  --alert-success-bg: #ecfdf5;
+  --alert-success-border: #bbf7d0;
+  --alert-success-text: #166534;
+
+  --alert-warning-bg: #fff7ed;
+  --alert-warning-border: #fdba74;
+  --alert-warning-text: #9a3412;
+
+  /* TABLE */
+  --table-header-bg: #f3f4f6;
 }
 
 html,
@@ -41,6 +78,7 @@ body {
 .splash-leave-active {
   transition: opacity 0.25s ease;
 }
+
 .splash-enter-from,
 .splash-leave-to {
   opacity: 0;

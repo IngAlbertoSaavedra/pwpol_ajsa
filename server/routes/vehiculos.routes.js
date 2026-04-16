@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   listVehiculos,
+  consultVehiculo,
   getVehiculo,
   createVehiculo,
   updateVehiculo,
@@ -11,6 +12,7 @@ import {
 const router = Router();
 
 router.get("/", listVehiculos);
+router.get("/consulta", consultVehiculo);
 router.get("/:id", getVehiculo);
 
 router.post("/", createVehiculo);

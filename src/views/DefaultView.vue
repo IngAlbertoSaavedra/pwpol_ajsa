@@ -54,16 +54,7 @@
               <td>{{ row.nombre || "-" }}</td>
               <td>{{ formatTelefono(row.telefono1, row.telefono2) }}</td>
               <td>{{ row.extension || "-" }}</td>
-              <td>
-                <a
-                  v-if="row.correo"
-                  class="mail-link"
-                  :href="`mailto:${row.correo}`"
-                >
-                  {{ row.correo }}
-                </a>
-                <span v-else>-</span>
-              </td>
+              <td>{{ row.correo || "-" }}</td>
               <td>{{ row.domicilio || "-" }}</td>
               
             </tr>

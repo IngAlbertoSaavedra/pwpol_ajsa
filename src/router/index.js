@@ -52,6 +52,15 @@ const routes = [
           viewDesc: "Registrar Carga de Vehículo" },
       },
       {
+        path: "eliminar-carga",
+        name: "VehiculoEliminarCarga",
+        component: () => import("@/views/vehiculos/EliminarCargaView.vue"),
+        meta: { 
+          requiresAuth: true, 
+          breadcrumb: "Eliminar Carga",
+          viewDesc: "Eliminar Carga de Vehículo" },
+      },
+      {
         path: "consultar-vehiculo",
         name: "VehiculoConsultarVehiculo",
         component: () => import("@/views/vehiculos/ConsultarVehiculoView.vue"),

@@ -33,6 +33,11 @@
           routeName: "VehiculoRegistrarCarga",
           disabled: false,
         },
+        {
+          title: "Eliminar Carga",
+          routeName: "VehiculoEliminarCarga",
+          disabled: false,
+        },
       ],
     },
     {

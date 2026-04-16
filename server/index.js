@@ -19,6 +19,8 @@ import modelosRoutes from "./routes/modelos.routes.js";
 import vehiculosRoutes from "./routes/vehiculos.routes.js";
 import asignacionChoferRoutes from "./routes/asignacionchofer.routes.js";
 import perfilesRoutes from "./routes/perfiles.routes.js";
+import registroCargasRoutes from "./routes/registrocargas.routes.js";
+import eliminarCargasCombustibleRoutes from "./routes/cargascombustible.routes.js";
 
 dotenv.config();
 
@@ -45,6 +47,8 @@ app.use("/api/modelos", modelosRoutes);
 app.use("/api/vehiculos", vehiculosRoutes);
 app.use("/api/asignacionchofer", asignacionChoferRoutes);
 app.use("/api/perfiles", perfilesRoutes);
+app.use("/api/registrocargas", registroCargasRoutes);
+app.use("/api/cargascombustible", eliminarCargasCombustibleRoutes);
 
 app.post("/api/login", async (req, res) => {
   const usuario = String(req.body?.usuario || "").trim();
