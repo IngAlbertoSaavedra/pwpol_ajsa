@@ -25,7 +25,7 @@ export async function apiFetch(endpoint, options = {}) {
         errorMessage = errorText || errorMessage;
       }
     } catch {
-      // dejamos el mensaje por defecto
+      // no decimos nada, ya tenemos un mensaje de error genérico
     }
 
     throw new Error(errorMessage);

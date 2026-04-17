@@ -201,12 +201,23 @@ const placeholderBusqueda = computed(() =>
 
 const caracteresDisponibles = computed(() => 250 - comentario.value.length);
 
+const usuarioLogeado = computed(() => {
+  const session = authService.getSession?.() || null;
+
+  return (
+    authService.userRef?.value ||
+    session?.userusuario ||
+    session?.user?.usuario ||
+    ""
+  );
+});
+
 const puedeEliminar = computed(() => {
   return (
     !!vehiculo.value?.id &&
     idsSeleccionados.value.length > 0 &&
     comentario.value.trim().length >= 15 &&
-    !!authService.userRef.value
+    !!usuarioLogeado.value
   );
 });
 
@@ -277,10 +288,22 @@ async function buscar() {
 }
 
 function validarAntesDeEliminar() {
-  if (!vehiculo.value?.id) return "Primero debes consultar una unidad válida";
-  if (!idsSeleccionados.value.length) return "Debes seleccionar al menos una carga";
-  if (comentario.value.trim().length < 15) return "El motivo es obligatorio y debe tener al menos 15 caracteres";
-  if (!authService.userRef.value) return "No se encontró el usuario logeado";
+  if (!vehiculo.value?.id) {
+    return "Primero debes consultar una unidad válida";
+  }
+
+  if (!idsSeleccionados.value.length) {
+    return "Debes seleccionar al menos una carga";
+  }
+
+  if (comentario.value.trim().length < 15) {
+    return "El motivo es obligatorio y debe tener al menos 15 caracteres";
+  }
+
+  if (!usuarioLogeado.value) {
+    return "No se encontró el usuario logeado";
+  }
+
   return "";
 }
 
@@ -306,7 +329,7 @@ async function eliminar() {
       body: JSON.stringify({
         ids: idsSeleccionados.value,
         comentario: comentario.value,
-        usuario: authService.userRef.value,
+        usuario: usuarioLogeado.value,
       }),
     });
 
@@ -334,8 +357,11 @@ async function eliminar() {
 
 function formatDate(value) {
   if (!value) return "-";
+
   const date = new Date(value);
+
   if (Number.isNaN(date.getTime())) return "-";
+
   return date.toLocaleDateString("es-MX");
 }
 
@@ -346,6 +372,7 @@ function formatNumber(value) {
 
 function formatDecimal(value) {
   const number = Number(value || 0);
+
   return number.toLocaleString("es-MX", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -354,6 +381,7 @@ function formatDecimal(value) {
 
 function formatMoney(value) {
   const number = Number(value || 0);
+
   return number.toLocaleString("es-MX", {
     style: "currency",
     currency: "MXN",

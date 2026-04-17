@@ -3,6 +3,7 @@ import {
   listVehiculos,
   consultVehiculo,
   getVehiculo,
+  historyVehiculo,
   createVehiculo,
   updateVehiculo,
   changeDriver,
@@ -13,6 +14,7 @@ const router = Router();
 
 router.get("/", listVehiculos);
 router.get("/consulta", consultVehiculo);
+router.get("/historial", historyVehiculo);
 router.get("/:id", getVehiculo);
 
 router.post("/", createVehiculo);

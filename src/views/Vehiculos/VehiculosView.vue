@@ -48,6 +48,11 @@
           routeName: "ReporteRendimientoVehiculo",
           disabled: false,
         },
+        {
+          title: "Historial de Vehículo",
+          routeName: "ReporteHistorialVehiculo",
+          disabled: false,
+        },
       ],
     },
   ];

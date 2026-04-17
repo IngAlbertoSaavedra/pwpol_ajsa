@@ -82,23 +82,10 @@ export async function getVehiculo(req, res) {
       });
     }
 
-    const listResult = await execSp("sp_vehiculos", [
-      { name: "accion", type: sql.VarChar(20), value: "LIST" },
-    ]);
-
-    const vehiculoBase = (listResult.recordset ?? []).find((item) => Number(item.id) === id);
-
-    if (!vehiculoBase) {
-      return res.status(404).json({
-        ok: false,
-        msg: "Vehículo no encontrado",
-      });
-    }
-
     const result = await execSp("sp_vehiculos", [
       { name: "accion", type: sql.VarChar(20), value: "GET" },
-      { name: "id", type: sql.Int, value: null },
-      { name: "clave", type: sql.VarChar(15), value: limpiarTexto(vehiculoBase.clave) || null },
+      { name: "id", type: sql.Int, value: id },
+      { name: "clave", type: sql.VarChar(15), value: null },
       { name: "placa", type: sql.VarChar(15), value: null },
     ]);
 
@@ -113,13 +100,88 @@ export async function getVehiculo(req, res) {
 
     res.json({
       ok: true,
-      data,
+      data: data.vehiculo,
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({
       ok: false,
       msg: err?.message || "Error consultando vehículo",
+    });
+  }
+}
+
+export async function historyVehiculo(req, res) {
+  try {
+    const clave = limpiarTexto(req.query.clave);
+    const placa = limpiarTexto(req.query.placa);
+
+    if (!clave && !placa) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Debes indicar la clave o la placa",
+      });
+    }
+
+    const listResult = await execSp("sp_vehiculos", [
+      { name: "accion", type: sql.VarChar(20), value: "LIST" },
+    ]);
+
+    const lista = listResult.recordset ?? [];
+    const vehiculoBase = lista.find((item) => {
+      const itemClave = limpiarTexto(item.clave);
+      const itemPlaca = limpiarTexto(item.placa);
+
+      return (
+        (clave && itemClave === clave) ||
+        (placa && itemPlaca === placa)
+      );
+    });
+
+    if (!vehiculoBase) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Unidad no encontrada",
+      });
+    }
+
+    const detalleResult = await execSp("sp_vehiculos", [
+      { name: "accion", type: sql.VarChar(20), value: "GET" },
+      { name: "id", type: sql.Int, value: Number(vehiculoBase.id) },
+      { name: "clave", type: sql.VarChar(15), value: null },
+      { name: "placa", type: sql.VarChar(15), value: null },
+    ]);
+
+    const detalle = armarRespuestaConsulta(detalleResult);
+
+    if (!detalle.vehiculo) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Unidad no encontrada",
+      });
+    }
+
+    const historyResult = await execSp("sp_vehiculos", [
+      { name: "accion", type: sql.VarChar(20), value: "HISTORY" },
+      { name: "id", type: sql.Int, value: Number(vehiculoBase.id) },
+      { name: "clave", type: sql.VarChar(15), value: limpiarTexto(vehiculoBase.clave) || null },
+      { name: "placa", type: sql.VarChar(15), value: limpiarTexto(vehiculoBase.placa) || null },
+    ]);
+
+    const historial = historyResult.recordset ?? [];
+
+    res.json({
+      ok: true,
+      data: {
+        vehiculo: detalle.vehiculo,
+        historial,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      ok: false,
+      msg: err?.message || "Error consultando historial del vehículo",
     });
   }
 }

@@ -1,8 +1,8 @@
 <template>
-  <section class="rendimiento-vehiculo">
+  <section class="historial-vehiculo">
     <div class="page-header">
-      <h1>Reporte Rendimiento Vehículo</h1>
-      <p>Consulta el historial de cargas por clave de vehículo o placa y exporta el reporte en PDF.</p>
+      <h1>Reporte Historial Vehículo</h1>
+      <p>Consulta el historial del vehículo por clave o placa y exporta el reporte en PDF.</p>
     </div>
 
     <div class="search-card">
@@ -60,7 +60,7 @@
 
     <div class="content-card">
       <div class="section-title">
-        <h2>Unidad y Chofer</h2>
+        <h2>Datos del Vehículo</h2>
       </div>
 
       <div class="vehicle-grid">
@@ -91,7 +91,7 @@
 
         <div class="field">
           <span class="field-label">Modelo</span>
-          <span class="field-value">{{ vehiculo?.modelo || "-" }}</span>
+          <span class="field-value">{{ vehiculo?.anio || vehiculo?.modelo || "-" }}</span>
         </div>
 
         <div class="field">
@@ -99,14 +99,9 @@
           <span class="field-value">{{ vehiculo?.combustible || "-" }}</span>
         </div>
 
-        <div class="field">
-          <span class="field-label">Nómina</span>
-          <span class="field-value">{{ empleado?.nomina || "-" }}</span>
-        </div>
-
         <div class="field field-wide">
           <span class="field-label">Chofer</span>
-          <span class="field-value">{{ empleado?.chofer || "-" }}</span>
+          <span class="field-value">{{ vehiculo?.chofer || "-" }}</span>
         </div>
       </div>
     </div>
@@ -127,6 +122,36 @@
           <input v-model="fechaFin" type="date" :disabled="!vehiculo" />
         </div>
 
+        <div class="form-field">
+          <label>Movimiento</label>
+          <select v-model="filtroMovimiento" :disabled="!vehiculo">
+            <option value="">Todos</option>
+            <option v-for="item in movimientosUnicos" :key="item" :value="item">
+              {{ item }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>Usuario</label>
+          <select v-model="filtroUsuario" :disabled="!vehiculo">
+            <option value="">Todos</option>
+            <option v-for="item in usuariosUnicos" :key="item" :value="item">
+              {{ item }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label>Chofer</label>
+          <select v-model="filtroChofer" :disabled="!vehiculo">
+            <option value="">Todos</option>
+            <option v-for="item in choferesUnicos" :key="item" :value="item">
+              {{ item }}
+            </option>
+          </select>
+        </div>
+
         <div class="filter-actions">
           <button class="btn btn-secondary" :disabled="!vehiculo" @click="limpiarFiltros">
             Limpiar Filtros
@@ -141,9 +166,9 @@
 
     <div class="content-card">
       <div class="section-title section-title-inline">
-        <h2>Histórico de Rendimiento</h2>
+        <h2>Historial del Vehículo</h2>
         <span class="records-badge">
-          Registros mostrados: {{ cargasFiltradas.length }}
+          Registros mostrados: {{ historialFiltrado.length }}
         </span>
       </div>
 
@@ -151,30 +176,28 @@
         <table class="data-table">
           <thead>
             <tr>
+              <th>Movimiento</th>
               <th>Fecha</th>
               <th>Hora</th>
               <th>Odómetro</th>
-              <th>Litros</th>
-              <th>Importe</th>
-              <th>Precio Litro</th>
-              <th>Recorrido</th>
-              <th>Rendimiento</th>
+              <th>Chofer</th>
+              <th>Comentario</th>
+              <th>Usuario</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-if="!cargasFiltradas.length">
-              <td colspan="8" class="empty-cell">Sin cargas registradas en el rango seleccionado</td>
+            <tr v-if="!historialFiltrado.length">
+              <td colspan="7" class="empty-cell">Sin registros en el rango seleccionado</td>
             </tr>
 
-            <tr v-for="item in cargasFiltradas" :key="item.id">
+            <tr v-for="item in historialFiltrado" :key="item.id">
+              <td>{{ item.movimiento || "-" }}</td>
               <td>{{ formatDate(item.fecha) }}</td>
               <td>{{ item.hora || "-" }}</td>
               <td>{{ formatNumber(item.odometro) }}</td>
-              <td>{{ formatDecimal(item.litros) }}</td>
-              <td>{{ formatMoney(item.importe) }}</td>
-              <td>{{ formatMoney(item.precio_litro) }}</td>
-              <td>{{ formatNumber(item.recorrido) }}</td>
-              <td>{{ formatDecimal(item.rendimiento) }}</td>
+              <td>{{ item.chofer || "-" }}</td>
+              <td>{{ item.comentario || "-" }}</td>
+              <td>{{ item.usuario || "-" }}</td>
             </tr>
           </tbody>
         </table>
@@ -198,12 +221,14 @@ const loadingPdf = ref(false);
 const mensajeBusqueda = ref("");
 const unidadEncontrada = ref(false);
 
-const empleado = ref(null);
 const vehiculo = ref(null);
-const cargas = ref([]);
+const historial = ref([]);
 
 const fechaInicio = ref("");
 const fechaFin = ref("");
+const filtroMovimiento = ref("");
+const filtroUsuario = ref("");
+const filtroChofer = ref("");
 
 const labelBusqueda = computed(() =>
   tipoBusqueda.value === "clave" ? "Clave de Vehículo" : "Placa"
@@ -226,6 +251,30 @@ const usuarioLogeado = computed(() => {
 
 const puedeExportar = computed(() => !!vehiculo.value?.id);
 
+const movimientosUnicos = computed(() => {
+  return [...new Set(
+    historial.value
+      .map((item) => String(item.movimiento || "").trim())
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, "es"));
+});
+
+const usuariosUnicos = computed(() => {
+  return [...new Set(
+    historial.value
+      .map((item) => String(item.usuario || "").trim())
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, "es"));
+});
+
+const choferesUnicos = computed(() => {
+  return [...new Set(
+    historial.value
+      .map((item) => String(item.chofer || "").trim())
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, "es"));
+});
+
 const mensajeFiltro = computed(() => {
   if (!fechaInicio.value || !fechaFin.value) return "";
 
@@ -238,19 +287,25 @@ const mensajeFiltro = computed(() => {
   return "";
 });
 
-const cargasFiltradas = computed(() => {
-  if (!Array.isArray(cargas.value)) return [];
+const historialFiltrado = computed(() => {
+  if (!Array.isArray(historial.value)) return [];
   if (mensajeFiltro.value) return [];
 
   const inicio = fechaInicio.value ? parseDateOnly(fechaInicio.value) : null;
   const fin = fechaFin.value ? parseDateOnly(fechaFin.value) : null;
 
-  return cargas.value.filter((item) => {
+  return historial.value.filter((item) => {
     const fechaItem = parseDateOnly(item.fecha);
-    if (!fechaItem) return false;
+    const movimientoItem = String(item.movimiento || "").trim();
+    const usuarioItem = String(item.usuario || "").trim();
+    const choferItem = String(item.chofer || "").trim();
 
+    if (!fechaItem) return false;
     if (inicio && fechaItem < inicio) return false;
     if (fin && fechaItem > fin) return false;
+    if (filtroMovimiento.value && movimientoItem !== filtroMovimiento.value) return false;
+    if (filtroUsuario.value && usuarioItem !== filtroUsuario.value) return false;
+    if (filtroChofer.value && choferItem !== filtroChofer.value) return false;
 
     return true;
   });
@@ -284,6 +339,9 @@ function normalizarTexto(valor) {
 function limpiarFiltros() {
   fechaInicio.value = "";
   fechaFin.value = "";
+  filtroMovimiento.value = "";
+  filtroUsuario.value = "";
+  filtroChofer.value = "";
 }
 
 function limpiarTodo() {
@@ -291,9 +349,8 @@ function limpiarTodo() {
   criterio.value = "";
   mensajeBusqueda.value = "";
   unidadEncontrada.value = false;
-  empleado.value = null;
   vehiculo.value = null;
-  cargas.value = [];
+  historial.value = [];
   limpiarFiltros();
 }
 
@@ -302,9 +359,8 @@ async function buscar() {
 
   mensajeBusqueda.value = "";
   unidadEncontrada.value = false;
-  empleado.value = null;
   vehiculo.value = null;
-  cargas.value = [];
+  historial.value = [];
   limpiarFiltros();
 
   if (!valor) {
@@ -321,7 +377,7 @@ async function buscar() {
     const params = new URLSearchParams();
     params.set(tipoBusqueda.value, valor);
 
-    const response = await fetch(`/api/cargascombustible/eliminar/consulta?${params.toString()}`, {
+    const response = await fetch(`/api/vehiculos/historial?${params.toString()}`, {
       cache: "no-store",
     });
 
@@ -332,9 +388,8 @@ async function buscar() {
       return;
     }
 
-    empleado.value = data.data?.empleado ?? null;
     vehiculo.value = data.data?.vehiculo ?? null;
-    cargas.value = Array.isArray(data.data?.cargas) ? data.data.cargas : [];
+    historial.value = Array.isArray(data.data?.historial) ? data.data.historial : [];
     unidadEncontrada.value = true;
     mensajeBusqueda.value = "Unidad encontrada";
   } catch (error) {
@@ -359,19 +414,23 @@ function getFechaHoraActual() {
 }
 
 function getDescripcionFiltro() {
+  const partes = [];
+
   if (fechaInicio.value && fechaFin.value) {
-    return `Del ${formatDate(fechaInicio.value)} al ${formatDate(fechaFin.value)}`;
+    partes.push(`Fechas: del ${formatDate(fechaInicio.value)} al ${formatDate(fechaFin.value)}`);
+  } else if (fechaInicio.value) {
+    partes.push(`Fechas: desde ${formatDate(fechaInicio.value)}`);
+  } else if (fechaFin.value) {
+    partes.push(`Fechas: hasta ${formatDate(fechaFin.value)}`);
+  } else {
+    partes.push("Fechas: sin filtro");
   }
 
-  if (fechaInicio.value) {
-    return `Desde ${formatDate(fechaInicio.value)}`;
-  }
+  partes.push(`Movimiento: ${filtroMovimiento.value || "Todos"}`);
+  partes.push(`Usuario: ${filtroUsuario.value || "Todos"}`);
+  partes.push(`Chofer: ${filtroChofer.value || "Todos"}`);
 
-  if (fechaFin.value) {
-    return `Hasta ${formatDate(fechaFin.value)}`;
-  }
-
-  return "Sin filtro de fechas";
+  return partes.join(" | ");
 }
 
 async function cargarImagenComoBase64(src) {
@@ -390,16 +449,15 @@ async function exportarPdf() {
   if (!vehiculo.value?.id) return;
   if (mensajeFiltro.value) {
     mensajeBusqueda.value = mensajeFiltro.value;
-    unidadEncontrada.value = false;
     return;
   }
 
   loadingPdf.value = true;
 
   try {
-    const doc = new jsPDF("p", "mm", "a4");
+    const doc = new jsPDF("l", "mm", "a4");
     const { fecha, hora } = getFechaHoraActual();
-    const nombreArchivo = `REPORTE_RENDIMIENTO_${vehiculo.value.clave || "VEHICULO"}_${fecha.replaceAll("/", "-")}.pdf`;
+    const nombreArchivo = `REPORTE_HISTORIAL_${vehiculo.value.clave || "VEHICULO"}_${fecha.replaceAll("/", "-")}.pdf`;
 
     let logoBase64 = null;
     try {
@@ -409,17 +467,18 @@ async function exportarPdf() {
     }
 
     if (logoBase64) {
-      doc.addImage(logoBase64, "JPEG", 14, 10, 32, 28);
+      doc.addImage(logoBase64, "PNG", 14, 8, 28, 22);
     }
 
     doc.setFontSize(16);
-    doc.text("Reporte de Rendimiento Vehicular", 52, 18);
+    doc.text("Reporte Historial Vehicular", 48, 16);
 
     doc.setFontSize(10);
-    doc.text(`Fecha de descarga: ${fecha}`, 52, 26);
-    doc.text(`Hora de descarga: ${hora}`, 52, 31);
-    doc.text(`Usuario: ${usuarioLogeado.value}`, 52, 36);
-    doc.text(`Filtro aplicado: ${getDescripcionFiltro()}`, 52, 41);
+    doc.text(`Fecha de descarga: ${fecha}`, 48, 24);
+    doc.text(`Hora de descarga: ${hora}`, 48, 29);
+    doc.text(`Usuario: ${usuarioLogeado.value}`, 48, 34);
+
+    doc.text(`Filtro aplicado: ${getDescripcionFiltro()}`, 14, 42);
 
     doc.setFontSize(11);
     doc.text("Datos de la unidad", 14, 50);
@@ -430,10 +489,9 @@ async function exportarPdf() {
       ["Sucursal", vehiculo.value?.sucursal || "-"],
       ["Marca", vehiculo.value?.marca || "-"],
       ["Sub Marca", vehiculo.value?.submarca || "-"],
-      ["Modelo", String(vehiculo.value?.modelo || "-")],
+      ["Modelo", String(vehiculo.value?.anio || vehiculo.value?.modelo || "-")],
       ["Combustible", vehiculo.value?.combustible || "-"],
-      ["Nómina", String(empleado.value?.nomina || "-")],
-      ["Chofer", empleado.value?.chofer || "-"],
+      ["Chofer", vehiculo.value?.chofer || "-"],
     ];
 
     autoTable(doc, {
@@ -450,32 +508,36 @@ async function exportarPdf() {
       theme: "grid",
     });
 
-    const bodyTabla = cargasFiltradas.value.map((item) => [
+    const bodyTabla = historialFiltrado.value.map((item) => [
+      item.movimiento || "-",
       formatDate(item.fecha),
       item.hora || "-",
       formatNumber(item.odometro),
-      formatDecimal(item.litros),
-      formatMoney(item.importe),
-      formatMoney(item.precio_litro),
-      formatNumber(item.recorrido),
-      formatDecimal(item.rendimiento),
+      item.chofer || "-",
+      item.comentario || "-",
+      item.usuario || "-",
     ]);
 
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
       head: [[
+        "Movimiento",
         "Fecha",
         "Hora",
         "Odómetro",
-        "Litros",
-        "Importe",
-        "Precio Litro",
-        "Recorrido",
-        "Rendimiento",
+        "Chofer",
+        "Comentario",
+        "Usuario",
       ]],
-      body: bodyTabla.length ? bodyTabla : [["-", "-", "-", "-", "-", "-", "-", "-"]],
+      body: bodyTabla.length ? bodyTabla : [["-", "-", "-", "-", "-", "-", "-"]],
       styles: {
         fontSize: 8,
+        cellWidth: "wrap",
+      },
+      columnStyles: {
+        4: { cellWidth: 45 },
+        5: { cellWidth: 70 },
+        6: { cellWidth: 35 },
       },
       headStyles: {
         fillColor: [220, 235, 245],
@@ -506,30 +568,10 @@ function formatNumber(value) {
   const number = Number(value || 0);
   return number.toLocaleString("es-MX");
 }
-
-function formatDecimal(value) {
-  const number = Number(value || 0);
-
-  return number.toLocaleString("es-MX", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
-
-function formatMoney(value) {
-  const number = Number(value || 0);
-
-  return number.toLocaleString("es-MX", {
-    style: "currency",
-    currency: "MXN",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
 </script>
 
 <style scoped>
-.rendimiento-vehiculo {
+.historial-vehiculo {
   display: grid;
   gap: 16px;
 }
@@ -588,7 +630,8 @@ function formatMoney(value) {
 }
 
 .search-field input,
-.form-field input {
+.form-field input,
+.form-field select {
   width: 100%;
   height: 46px;
   border: 1px solid var(--input-border);
@@ -602,13 +645,13 @@ function formatMoney(value) {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.search-field input::placeholder,
-.form-field input::placeholder {
+.search-field input::placeholder {
   color: var(--input-placeholder);
 }
 
 .search-field input:focus,
-.form-field input:focus {
+.form-field input:focus,
+.form-field select:focus {
   border-color: var(--input-focus);
   box-shadow: 0 0 0 3px var(--input-focus-shadow);
 }
@@ -733,7 +776,7 @@ function formatMoney(value) {
 
 .data-table {
   width: 100%;
-  min-width: 900px;
+  min-width: 1100px;
   border-collapse: collapse;
 }
 

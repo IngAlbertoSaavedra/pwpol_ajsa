@@ -88,6 +88,16 @@ const routes = [
           breadcrumb: "Reporte Rendimiento Vehículo",
           viewDesc: "Reporte Rendimiento Vehículo" },
       },
+      {
+        path: "reporte-historial-vehiculo",
+        name: "ReporteHistorialVehiculo",
+        component: () =>
+          import("@/views/vehiculos/HistorialVehiculoView.vue"),
+        meta: { 
+          requiresAuth: true, 
+          breadcrumb: "Reporte Historial Vehículo",
+          viewDesc: "Reporte Historial Vehículo" },
+      },
     ],
   },
 
@@ -100,6 +110,16 @@ const routes = [
         breadcrumb: "Administración",
         viewDesc: "Administración" },
     children: [
+      {
+        path: "permisos",
+        name: "AdministracionPermisos",
+        component: () => import("@/views/administracion/PermisosView.vue"),
+        meta: { 
+          requiresAuth: true, 
+          viewDesc: "Permisos",
+          breadcrumb: "Permisos"
+        },
+      },
       {
         path: "sucursales",
         name: "AdministracionSucursales",
@@ -136,8 +156,8 @@ const routes = [
         component: () => import("@/views/administracion/EmpresasView.vue"),
         meta: { 
           requiresAuth: true, 
-          viewDesc: "Empleados", 
-          breadcrumb: "Empleados" },
+          viewDesc: "Empresas", 
+          breadcrumb: "Empresas" },
       },
       {
         path: "empleados",
@@ -273,8 +293,8 @@ router.beforeEach((to) => {
   const isAuth = authService.isAuthenticatedRef.value;
   const perfil = authService.perfilRef.value;
   const requiresAuth = to.matched.some((r) => r.meta?.requiresAuth);
-  const allowedperfils = to.matched
-    .map((r) => r.meta?.allowedperfils)
+  const allowedperfiles = to.matched
+    .map((r) => r.meta?.allowedperfiles)
     .find((x) => Array.isArray(x));
 
   if (to.path === "/login" && isAuth) {
@@ -286,9 +306,9 @@ router.beforeEach((to) => {
   }
 
   if (
-    allowedperfils &&
-    allowedperfils.length > 0 &&
-    !allowedperfils.includes(perfil)
+    allowedperfiles &&
+    allowedperfiles.length > 0 &&
+    !allowedperfiles.includes(perfil)
   ) {
     return { path: "/default" };
   }

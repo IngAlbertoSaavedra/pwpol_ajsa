@@ -90,17 +90,14 @@
   const displayName = computed(() => {
     return (
       authService.nombreRef?.value ||
-      authService.userRef?.value?.empleado ||
-      authService.userRef?.value?.nombre ||
-      authService.userRef?.value?.usuario ||
+      authService.userRef?.value ||
       "Usuario"
     );
   });
 
   const displayRole = computed(() => {
     return (
-      authService.roleRef?.value ||
-      authService.userRef?.value?.perfil ||
+      authService.perfilRef?.value ||
       "Sin perfil"
     );
   });

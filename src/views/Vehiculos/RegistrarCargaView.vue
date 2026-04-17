@@ -253,6 +253,18 @@ const rendimientoCalculado = computed(() => {
   return recorridoCalculado.value / litrosCapturados.value;
 });
 
+const promedioHistorico = computed(() => Number(vehiculo.value?.rendimiento_promedio || 0));
+
+const limiteInferiorPromedio = computed(() => {
+  if (!promedioHistorico.value) return 0;
+  return promedioHistorico.value * 0.9;
+});
+
+const limiteSuperiorPromedio = computed(() => {
+  if (!promedioHistorico.value) return 0;
+  return promedioHistorico.value * 1.1;
+});
+
 function getFechaHoy() {
   const today = new Date();
   const year = today.getFullYear();
@@ -336,7 +348,7 @@ async function buscar() {
   }
 }
 
-function validarAntesDeGuardar() {
+function validarCampos() {
   if (!vehiculo.value?.id) return "Primero debes buscar una unidad válida";
   if (!form.value.fecha) return "La fecha es obligatoria";
   if (!form.value.hora) return "La hora es obligatoria";
@@ -351,27 +363,44 @@ function validarAntesDeGuardar() {
     return "El odómetro debe ser mayor al último registrado";
   }
 
-  const rendMin = Number(vehiculo.value?.rend_minimo || 0);
-  const rendMax = Number(vehiculo.value?.rend_maximo || 0);
-
-  if (ultimoOdometro.value > 0 && rendimientoCalculado.value > 0) {
-    if (rendimientoCalculado.value < rendMin || rendimientoCalculado.value > rendMax) {
-      return "El rendimiento calculado está fuera del rango permitido. No se puede guardar la carga, comuníquese a sistemas.";
-    }
-  }
-
   return "";
+}
+
+function requiereConfirmacionRendimiento() {
+  if (!promedioHistorico.value) return false;
+  if (!rendimientoCalculado.value) return false;
+
+  return (
+    rendimientoCalculado.value < limiteInferiorPromedio.value ||
+    rendimientoCalculado.value > limiteSuperiorPromedio.value
+  );
 }
 
 async function guardar() {
   mensajeGuardado.value = "";
   guardadoOk.value = false;
 
-  const error = validarAntesDeGuardar();
+  const error = validarCampos();
 
   if (error) {
     mensajeGuardado.value = error;
     return;
+  }
+
+  let forzar = false;
+
+  if (requiereConfirmacionRendimiento()) {
+    const confirmar = window.confirm(
+      "Rendimiento fuera de parámetros normales, ¿Desea continuar?"
+    );
+
+    if (!confirmar) {
+      mensajeGuardado.value =
+        "El registro no se guardó. Revisa los datos capturados e intenta nuevamente.";
+      return;
+    }
+
+    forzar = true;
   }
 
   loadingGuardado.value = true;
@@ -386,6 +415,7 @@ async function guardar() {
       odometro: Number(form.value.odometro),
       litros: Number(form.value.litros),
       importe: Number(form.value.importe),
+      forzar,
     };
 
     const response = await fetch("/api/cargascombustible", {

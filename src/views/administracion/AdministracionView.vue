@@ -33,6 +33,12 @@ const menus = [
       { title: "Perfiles", routeName: "AdministracionPerfiles" },
     ],
   },
+  {
+    label: "PERMISOS",
+    items: [
+      { title: "Permisos", routeName: "AdministracionPermisos" },
+    ],
+  },
 ];
 
 const isVehiculosModule = computed(() =>

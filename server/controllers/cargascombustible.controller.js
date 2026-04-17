@@ -10,9 +10,52 @@ function normalizarFecha(valor) {
   return texto || null;
 }
 
-function normalizarHora(valor) {
+function parseHoraATexto24(valor) {
   const texto = String(valor ?? "").trim();
-  return texto || null;
+
+  if (!texto) return null;
+
+  const match24 = texto.match(/^(\d{2}):(\d{2})(?::(\d{2}))?$/);
+  if (match24) {
+    const hh = match24[1];
+    const mm = match24[2];
+    const ss = match24[3] ?? "00";
+    return `${hh}:${mm}:${ss}`;
+  }
+
+  const limpio = texto
+    .toLowerCase()
+    .replace(/\./g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const match12 = limpio.match(/^(\d{1,2}):(\d{2})\s*(a m|p m|am|pm)$/);
+  if (match12) {
+    let hh = Number(match12[1]);
+    const mm = match12[2];
+    const periodo = match12[3].replace(/\s/g, "");
+
+    if (periodo === "pm" && hh < 12) hh += 12;
+    if (periodo === "am" && hh === 12) hh = 0;
+
+    return `${String(hh).padStart(2, "0")}:${mm}:00`;
+  }
+
+  return null;
+}
+
+function normalizarHora(valor) {
+  const horaTexto = parseHoraATexto24(valor);
+
+  if (!horaTexto) return null;
+
+  const [hh, mm, ss] = horaTexto.split(":").map(Number);
+
+  const fechaHora = new Date(1970, 0, 1, hh, mm, ss || 0, 0);
+
+  if (Number.isNaN(fechaHora.getTime())) return null;
+
+  return fechaHora;
 }
 
 function normalizarNumero(valor, permitirDecimal = false) {
@@ -61,6 +104,7 @@ export async function consultRegistroCarga(req, res) {
       { name: "ids", type: sql.VarChar(sql.MAX), value: null },
       { name: "comentario", type: sql.VarChar(250), value: null },
       { name: "id_empleado", type: sql.Int, value: null },
+      { name: "forzar", type: sql.Bit, value: false },
     ]);
 
     const vehiculo = result.recordset?.[0] ?? null;
@@ -87,7 +131,7 @@ export async function consultRegistroCarga(req, res) {
 
 export async function createRegistroCarga(req, res) {
   try {
-    const v = req.body;
+    const v = req.body ?? {};
 
     const payload = {
       id_vehiculo: normalizarNumero(v.id_vehiculo),
@@ -98,7 +142,29 @@ export async function createRegistroCarga(req, res) {
       odometro: normalizarNumero(v.odometro),
       litros: normalizarNumero(v.litros, true),
       importe: normalizarNumero(v.importe, true),
+      forzar: Boolean(v.forzar),
     };
+
+    if (!payload.id_vehiculo) {
+      return res.status(400).json({
+        ok: false,
+        msg: "La unidad es obligatoria",
+      });
+    }
+
+    if (!payload.fecha) {
+      return res.status(400).json({
+        ok: false,
+        msg: "La fecha es obligatoria",
+      });
+    }
+
+    if (!payload.hora) {
+      return res.status(400).json({
+        ok: false,
+        msg: "La hora capturada no es válida",
+      });
+    }
 
     const result = await execSp("sp_cargas_combustible", [
       { name: "accion", type: sql.VarChar(20), value: "INSERT" },
@@ -115,6 +181,7 @@ export async function createRegistroCarga(req, res) {
       { name: "ids", type: sql.VarChar(sql.MAX), value: null },
       { name: "comentario", type: sql.VarChar(250), value: null },
       { name: "id_empleado", type: sql.Int, value: null },
+      { name: "forzar", type: sql.Bit, value: payload.forzar },
     ]);
 
     res.json({
@@ -158,6 +225,7 @@ export async function listDeleteCargas(req, res) {
       { name: "ids", type: sql.VarChar(sql.MAX), value: null },
       { name: "comentario", type: sql.VarChar(250), value: null },
       { name: "id_empleado", type: sql.Int, value: null },
+      { name: "forzar", type: sql.Bit, value: false },
     ]);
 
     const empleado = result.recordsets?.[0]?.[0] ?? null;
@@ -232,6 +300,7 @@ export async function deleteCargas(req, res) {
       { name: "ids", type: sql.VarChar(sql.MAX), value: ids },
       { name: "comentario", type: sql.VarChar(250), value: comentario },
       { name: "id_empleado", type: sql.Int, value: null },
+      { name: "forzar", type: sql.Bit, value: false },
     ]);
 
     res.json({
